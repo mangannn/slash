@@ -16,17 +16,9 @@ Player::Player(Vector2f position, Controls *con):
 	Controlled(con)
 {
 
-	sprite.setTextureRect(sf::IntRect(0, 0, playerSpriteSize.x, playerSpriteSize.y));
-	sprite.setTexture(standingTex);
-	sprite.setOrigin(sf::Vector2f((float)playerSpriteSize.x / 2.0f, (float)playerSpriteSize.y / 2.0f) + Vector2f(0, -30));
-
-	//sprite.setColor(color);
-
-	float radius = 1;
-
-	Vector2f scale = sf::Vector2f((radius * 2.0f) / (float)playerSpriteSize.x, (radius * 2.0f) / (float)playerSpriteSize.x);
-
-	sprite.setScale(scale * 1.1f);
+	texture.loadFromFile("media/images/char.png");
+	sprite.setTexture(texture);
+	sprite.setOrigin(sf::Vector2f((float)texture.getSize().x / 2.0f, (float)texture.getSize().y));
 }
 
 void Player::eventCallback(int id) {
@@ -47,7 +39,6 @@ void Player::update(float elapsedTime) {
 }
 
 void Player::draw(RenderWindow *window) {
-	sprite.setRotation(90);
 	sprite.setPosition(pos);
 	window->draw(sprite);
 }

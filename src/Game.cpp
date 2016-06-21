@@ -9,15 +9,17 @@
 
 Game::Game() {
 
+	mapTex.loadFromFile("media/images/map.png");
+	mapSprite.setTexture(mapTex);
+
 
 	players = new std::vector<Player *>();
 
 
 	int a[] = {13, 12};
-
 	players->push_back(new Player(Vector2f(0,0), new KeyboardControls(73, 74, 71, 72, a, 2)));
-
-
+	//int a[] = {0, 1};
+	//players->push_back(new Player(Vector2f(0,0), new JoystickControls(0, 0, 1, a, 2)));
 
 
 	objects = new std::vector<Object *>();
@@ -66,7 +68,7 @@ void Game::eventHandle(sf::Event event) {
 
 			switch (event.key.code) {
 				case sf::Keyboard::Return: {
-					printf("asdasd\n");
+					printf("enter\n");
 				} break;
 				default: break;
 			}
@@ -94,8 +96,7 @@ void Game::update(float elapsedTime) {
 
 void Game::draw(RenderWindow *window) {
 
-	window->clear(sf::Color(100, 200, 100));
-	//window->clear(sf::Color(0xff, 0xff, 0xff));
+	window->clear();
 
 	float aspect = ((float)window->getSize().x / (float)window->getSize().y);
 
@@ -124,10 +125,10 @@ void Game::draw(RenderWindow *window) {
 		largest_most.x /= aspect;
 
 
-		float scale_multiply = size(smallest_most - largest_most) + 40.0f;
+		float scale_multiply = size(smallest_most - largest_most) + 100.0f;
 
-		if (scale_multiply < 200.0f) {
-			scale_multiply = 200.0f;
+		if (scale_multiply < 240.0f) {
+			scale_multiply = 240.0f;
 		}
 
 		Vector2f newPosition = (smallest_most + largest_most) / 2.0f;
@@ -145,7 +146,7 @@ void Game::draw(RenderWindow *window) {
 
 
 
-
+	window->draw(mapSprite);
 
 
 	for (unsigned int i = 0; i < objects->size(); i++) {
