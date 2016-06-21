@@ -12,6 +12,10 @@ public:
 	sf::Texture texture;
 	sf::Sprite sprite;
 
+
+	sf::Vector2f swordDir;
+	float swordLen;
+
 	Player(Vector2f position, Controls *controls);
 
 	virtual ~Player() {}

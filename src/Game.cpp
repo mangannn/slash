@@ -11,6 +11,8 @@ Game::Game() {
 
 	mapTex.loadFromFile("media/images/map.png");
 	mapSprite.setTexture(mapTex);
+	mapSprite.setOrigin(sf::Vector2f((float)mapTex.getSize().x / 2.0f, (float)mapTex.getSize().y / 2.0f));
+	mapSprite.setScale(10.0f, 10.0f);
 
 
 	players = new std::vector<Player *>();
@@ -120,9 +122,6 @@ void Game::draw(RenderWindow *window) {
 				smallest_most.y = v.y;
 			}
 		}
-
-		smallest_most.x /= aspect;
-		largest_most.x /= aspect;
 
 
 		float scale_multiply = size(smallest_most - largest_most) + 100.0f;
