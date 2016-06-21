@@ -11,8 +11,6 @@ public:
 
 	Vector2f pos;
 
-	CircleShape shape;
-
 	Object(
 		Vector2f posParam
 		):

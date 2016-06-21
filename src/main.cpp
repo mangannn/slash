@@ -41,14 +41,6 @@ bool load_resources() {
 		return false;
 	}*/
 	std::cout << "Done!" << std::endl;
-/*
-	standingTex.setSmooth(true);
-	runningTex.setSmooth(true);
-	bodyTex.setSmooth(true);
-	eyesTex.setSmooth(true);
-	mouthTex.setSmooth(true);
-	bollTex.setSmooth(true);
-*/
 
 
 	std::cout << "Loading font..." << std::endl;

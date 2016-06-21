@@ -21,6 +21,10 @@ private:
 
 	sf::View gameView;
 
+
+	sf::Texture mapTex;
+	sf::Sprite mapSprite;
+
 	std::vector<Object *> *objects;
 	std::vector<Player *> *players;
 };

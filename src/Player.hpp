@@ -9,6 +9,7 @@ class Player: public Object, public Controlled {
 
 public:
 
+	sf::Texture texture;
 	sf::Sprite sprite;
 
 	Player(Vector2f position, Controls *controls);
