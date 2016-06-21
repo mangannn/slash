@@ -4,6 +4,8 @@
 
 #include "Game.hpp"
 
+#include "obj/Rock.hpp"
+
 
 Game::Game() {
 
@@ -23,6 +25,10 @@ Game::Game() {
 	for (unsigned int i = 0; i < players->size(); i++) {
 		objects->push_back(players->at(i));
 	}
+
+
+
+	objects->push_back(new Rock(Vector2f(0,0)));
 
 
 	gameView.setSize(Vector2f(1000, 1000));

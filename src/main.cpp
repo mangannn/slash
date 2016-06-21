@@ -6,9 +6,7 @@
 using namespace sf;
 using namespace std;
 
-#include "game/Game.hpp"
-#include "CharacterSelect.hpp"
-#include "Startup.hpp"
+#include "Game.hpp"
 
 #include "InputCodeString.hpp"
 

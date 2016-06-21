@@ -37,9 +37,6 @@ clean:
 
 rebuild: clean build
 
-valgrind: $(TARGET)
-	(valgrind --show-reachable=yes --leak-check=full -v ./$(TARGET))
-
 run:
 	./$(TARGET)
 

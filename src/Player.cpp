@@ -1,6 +1,8 @@
 
 #include "Player.hpp"
 
+#include "Resources.hpp"
+
 #include <iostream>
 
 using namespace std;
@@ -18,7 +20,9 @@ Player::Player(Vector2f position, Controls *con):
 	sprite.setTexture(standingTex);
 	sprite.setOrigin(sf::Vector2f((float)playerSpriteSize.x / 2.0f, (float)playerSpriteSize.y / 2.0f) + Vector2f(0, -30));
 
-	sprite.setColor(color);
+	//sprite.setColor(color);
+
+	float radius = 1;
 
 	Vector2f scale = sf::Vector2f((radius * 2.0f) / (float)playerSpriteSize.x, (radius * 2.0f) / (float)playerSpriteSize.x);
 
@@ -43,7 +47,7 @@ void Player::update(float elapsedTime) {
 }
 
 void Player::draw(RenderWindow *window) {
-	sprite.setRotation(spriteDirection + 90);
+	sprite.setRotation(90);
 	sprite.setPosition(pos);
 	window->draw(sprite);
 }
