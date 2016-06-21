@@ -14,23 +14,13 @@ using namespace std;
 #define JOYSTICK_THRESHOLD (0.2f)
 
 
-Player::Player(Vector2f position, Controls *con):
-	Object(position),
-	Controlled(con)
+Player::Player(Vector2f position):
+	Object(position)
 {
 
 	texture.loadFromFile("media/images/char.png");
 	sprite.setTexture(texture);
 	sprite.setOrigin(sf::Vector2f((float)texture.getSize().x / 2.0f, (float)texture.getSize().y));
-}
-
-void Player::eventCallback(int id) {
-	switch (id) {
-		case 0: {
-			printf("bam!\n");
-		} break;
-		default: cout << "Action button pressed: " << id << endl;
-	}
 }
 
 void Player::update(float elapsedTime) {

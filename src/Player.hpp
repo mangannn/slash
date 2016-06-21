@@ -5,7 +5,7 @@
 #include "Controls.hpp"
 
 
-class Player: public Object, public Controlled {
+class Player: public Object {
 
 public:
 
@@ -19,9 +19,7 @@ public:
 	Player(Vector2f position, Controls *controls);
 
 	virtual ~Player() {}
-
-	virtual void eventCallback(int id);
-
+	
 	virtual void update(float elapsedTime);
 
 	virtual void draw(RenderWindow *window);
