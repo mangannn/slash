@@ -5,7 +5,7 @@
 #include "Game.hpp"
 
 #include "obj/Rock.hpp"
-
+#include "IvansTestAni/head.hpp"
 
 Game::Game() {
 
@@ -29,7 +29,7 @@ Game::Game() {
 
 
 	objects->push_back(new Rock(Vector2f(0,0)));
-
+    objects->push_back(new RotAni(Vector2f(0,-10)));
 
 	gameView.setSize(Vector2f(1000, 1000));
 	gameView.setCenter(Vector2f(0,0));;
