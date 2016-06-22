@@ -1,16 +1,25 @@
 #include <math.h>
 #include <iostream>
 
+#include "Resources.hpp"
 #include "Functions.hpp"
 
 #include "Game.hpp"
 
 #include "IvansTestAni/head.hpp"
+#include "IvansTestAni/titelEffekt.hpp"
+
 
 Game::Game() {
     
+    scaleFactor = 3.0;
+    
     gamePixelArea.create(320, 240);
-    gamePixelArea.setSmooth(false);
+    monitorPixelArea.create((int)(320 * scaleFactor), (int)(240 * scaleFactor));
+    
+    //gamePixelArea.setSmooth(false);
+    
+    setMainFont("media/fonts/pixlfont.ttf");
     
 	mapTex.loadFromFile("media/images/map.png");
 	mapSprite.setTexture(mapTex);
@@ -27,8 +36,9 @@ Game::Game() {
 
 	objects = new std::vector<Object *>();
 
-
+    
     objects->push_back(new RotAni(Vector2f(0,-10)));
+    objects->push_back(new TitelEffekt(Vector2f(120,100)));
 
 	gameView.setSize(Vector2f(1000, 1000));
 	gameView.setCenter(Vector2f(0,0));;
@@ -144,6 +154,7 @@ void Game::draw(RenderTarget *window) {
 
 	window->clear();
     gamePixelArea.clear();
+    monitorPixelArea.clear(Color(0, 0, 0, 0));
     Vector2u windowSize = window->getSize();
 	float aspect = ((float)windowSize.x / (float)windowSize.y);
 
@@ -182,6 +193,7 @@ void Game::draw(RenderTarget *window) {
 		Vector2f currentPosition = gameView.getCenter();
 
 		gameView.setSize((newSize - currentSize) / 4.0f + currentSize);
+		// gameView.setSize(newSize);
 		gameView.setCenter((newPosition - currentPosition) / 4.0f + currentPosition);
 		
 		gamePixelArea.setView(gameView);
@@ -192,20 +204,30 @@ void Game::draw(RenderTarget *window) {
 
 
 	for (unsigned int i = 0; i < orbs->size(); i++) {
-		orbs->at(i)->draw(window);
+		orbs->at(i)->draw(&gamePixelArea, &monitorPixelArea);
 	}
 	for (unsigned int i = 0; i < players->size(); i++) {
-		players->at(i)->draw(window);
+		players->at(i)->draw(&gamePixelArea, &monitorPixelArea);
 	}
 	for (unsigned int i = 0; i < objects->size(); i++) {
-		objects->at(i)->draw(&gamePixelArea);
+		objects->at(i)->draw(&gamePixelArea, &monitorPixelArea);
 	}
     
     gamePixelArea.display();
+    monitorPixelArea.display();
     
-    Sprite sprite(gamePixelArea.getTexture());
-    sprite.setOrigin(160, 120);
-    sprite.setPosition(windowSize.x / 2.f, windowSize.y / 2.f);
-    sprite.setScale(3,3);
-    window->draw(sprite);
+    {
+        Sprite sprite(gamePixelArea.getTexture());
+        sprite.setOrigin(160, 120);
+        sprite.setPosition((int)(windowSize.x / 2.f), (int)(windowSize.y / 2.f));
+        sprite.setScale(scaleFactor,scaleFactor);
+        window->draw(sprite);
+    }
+    
+    {
+        Sprite sprite(monitorPixelArea.getTexture());
+        sprite.setOrigin(320 / 2 * scaleFactor, 240 / 2 * scaleFactor);
+        sprite.setPosition((int)(windowSize.x / 2.f), (int)(windowSize.y / 2.f));
+        window->draw(sprite);
+    }
 }

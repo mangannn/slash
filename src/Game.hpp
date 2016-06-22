@@ -22,6 +22,7 @@ private:
 
 	sf::View gameView;
     sf::RenderTexture gamePixelArea;
+    sf::RenderTexture monitorPixelArea;
 
 	sf::Texture mapTex;
 	sf::Sprite mapSprite;
@@ -29,8 +30,9 @@ private:
 	std::vector<Object *> *objects;
 	std::vector<Orb *> *orbs;
 	std::vector<Player *> *players;
-
-
+    
+    float scaleFactor;
+    
 	float orbTimer = 0;
 };
 

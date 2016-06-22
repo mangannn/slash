@@ -14,3 +14,13 @@ sf::Texture *getTexture(const std::string filename) {
 		return texture_list[filename];
 	}
 }
+
+sf::Font _RESOURCES_mainFont;
+
+void setMainFont(sf::String filename){
+    _RESOURCES_mainFont.loadFromFile(filename);
+}
+
+sf::Font *getMainFont(){
+    return &_RESOURCES_mainFont;
+}

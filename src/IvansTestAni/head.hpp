@@ -23,10 +23,10 @@ public:
     Vertex vertices[CAPECOUNT] = {
         Vertex(Vector2f(-10, 0), c_mantel),
         Vertex(Vector2f( 10, 0), c_mantel),
-        Vertex(Vector2f(-12, 20), c_mantel),
-        Vertex(Vector2f( 11, 20), *tintColor(&c_mantel)),
-        Vertex(Vector2f(-13, 50), *tintColor(&c_mantel)),
-        Vertex(Vector2f( 14, 50), *tintColor(&c_mantel))
+        Vertex(Vector2f(-10, 20), c_mantel),
+        Vertex(Vector2f( 10, 20), *tintColor(&c_mantel)),
+        Vertex(Vector2f(10, 20), *tintColor(&c_mantel)),
+        Vertex(Vector2f( 10, 20), *tintColor(&c_mantel))
     };
     
 	RotAni(Vector2f position):
@@ -42,7 +42,7 @@ public:
         rot += elapsedTime;
     }
 
-	virtual void draw(RenderTarget *window) {
+	virtual void draw(RenderTarget *window, RenderTarget *monitor) {
         window->draw(vertices, CAPECOUNT, TrianglesStrip);
     }
 };

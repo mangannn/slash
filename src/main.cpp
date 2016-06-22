@@ -17,8 +17,9 @@ int main() {
 
 	sf::RenderWindow *window;
 	bool fullscreen = false;
+    
 
-	window = new RenderWindow(VideoMode(800, 620), WINDOW_TITLE, sf::Style::Resize | sf::Style::Close, settings);
+	window = new RenderWindow(sf::VideoMode::getFullscreenModes()[0], WINDOW_TITLE, sf::Style::Fullscreen, settings);
 	window->setMouseCursorVisible(false);
 	window->setKeyRepeatEnabled(false);
 	window->setVerticalSyncEnabled(false);
