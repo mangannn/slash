@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include <map>
 #include <SFML/Graphics.hpp>
 
@@ -7,7 +8,9 @@ static std::map<std::string, sf::Texture*> texture_list;
 sf::Texture *getTexture(const std::string filename) {
 	if (texture_list.find(filename) == texture_list.end()) {
 		sf::Texture *texture = new sf::Texture();
-		texture->loadFromFile(filename);
+		if (!texture->loadFromFile(filename)) {
+			std::cout << "Missing texture: " << filename << std::endl;
+		}
 		texture_list[filename] = texture;
 		return texture;
 	} else {
