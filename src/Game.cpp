@@ -192,10 +192,10 @@ void Game::draw(RenderTarget *window) {
 
 
 	for (unsigned int i = 0; i < orbs->size(); i++) {
-		orbs->at(i)->draw(window);
+		orbs->at(i)->draw(&gamePixelArea);
 	}
 	for (unsigned int i = 0; i < players->size(); i++) {
-		players->at(i)->draw(window);
+		players->at(i)->draw(&gamePixelArea);
 	}
 	for (unsigned int i = 0; i < objects->size(); i++) {
 		objects->at(i)->draw(&gamePixelArea);

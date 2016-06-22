@@ -36,7 +36,7 @@ public:
 		pos += vel * elapsedTime;
 	}
 
-	virtual void draw(RenderWindow *window) {
+	virtual void draw(RenderTarget *window) {
 		sprite.setPosition(pos);
 		window->draw(sprite);
 	}
