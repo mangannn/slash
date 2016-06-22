@@ -14,19 +14,21 @@ using namespace std;
 #define JOYSTICK_THRESHOLD (0.2f)
 
 
-Player::Player(Vector2f position):
+Player::Player(Vector2f position, int joystickIdParam):
 	Object(position),
+	joystickId(joystickIdParam),
 	walkBox(&pos, Vector2f(0, -14), 14),
+	bodyBox(&pos, Vector2f(0, -25), 20),
 	swordBox(&pos, Vector2f(0, 10), 4)
 {
 	texture = getTexture("media/images/char.png");
 	sprite.setTexture(*texture);
 	sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
+
+	sprite.setColor(RANDOM_COLOR);
 }
 
 void Player::update(float elapsedTime) {
-
-	int joystickId = 0;
 
 	float x = sf::Joystick::getAxisPosition(joystickId, sf::Joystick::X) / 100.0f;
 	float y = sf::Joystick::getAxisPosition(joystickId, sf::Joystick::Y) / 100.0f;
@@ -56,12 +58,14 @@ void Player::update(float elapsedTime) {
 
 }
 
-void Player::draw(RenderTarget *window, RenderTarget *monitor) {
-	sprite.setPosition(pos);
-	window->draw(sprite);
+void Player::draw(RenderTarget *target, RenderTarget *monitor) {
 
-	walkBox.draw(window);
-	swordBox.draw(window);
+	sprite.setPosition(pos);
+	target->draw(sprite);
+
+	walkBox.draw(target);
+	bodyBox.draw(target);
+	swordBox.draw(target);
 
 
 	Vector2f swordOri = pos + Vector2f(0, -(float)texture->getSize().y / 2.0);
@@ -72,5 +76,14 @@ void Player::draw(RenderTarget *window, RenderTarget *monitor) {
 	    swordOri + swordDir * swordLen
 	};
 
-	window->draw(line, 2, sf::Lines);
+	target->draw(line, 2, sf::Lines);
+}
+
+
+
+Color tintColor(Color c, int amount) {
+    c.r += 10 * amount;
+    c.g += 5 *amount;
+    c.b += -30 * amount;
+    return c;
 }

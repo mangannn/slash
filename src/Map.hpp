@@ -41,12 +41,12 @@ public:
 		mapSprite.setScale(8.0f, 8.0f);
 	}
 
-	void draw(RenderTarget *window) {
+	void draw(RenderTarget *target) {
 
-		window->draw(mapSprite);
+		target->draw(mapSprite);
 
 		for (int i = 0; i < numStatic; i++) {
-			staticBoxes[i].draw(window);
+			staticBoxes[i].draw(target);
 		}
 	}
 

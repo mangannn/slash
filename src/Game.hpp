@@ -18,7 +18,7 @@ public:
 	virtual void eventHandle(sf::Event event);
 	virtual void update(float elapsedTime);
 
-	virtual void draw(sf::RenderTarget *window);
+	virtual void draw(sf::RenderTarget *target);
 
 private:
 

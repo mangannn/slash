@@ -6,12 +6,7 @@
 
 using namespace sf;
 
-Color tintColor(Color c, int amount) {
-    c.r += 10 * amount;
-    c.g += 5 *amount;
-    c.b += -30 * amount;
-    return c;
-}
+Color tintColor(Color c, int amount);
 
 class Player: public Object {
 
@@ -19,14 +14,15 @@ public:
 
 	Texture *texture;
 	Sprite sprite;
+	int joystickId;
 
 
 	Vector2f swordDir;
 	float swordLen;
 
-	CollisionBox walkBox, swordBox;
+	CollisionBox walkBox, bodyBox, swordBox;
 
-	Player(Vector2f position);
+	Player(Vector2f position, int joystickIdParam);
 
 	virtual ~Player() {}
 	

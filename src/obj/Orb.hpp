@@ -14,7 +14,7 @@ public:
 
 	Vector2f vel;
 
-	float radius;
+	CollisionBox box;
 
 	Orb(Vector2f position, Vector2f velocity):
 		Object(position),
@@ -27,7 +27,7 @@ public:
 
 		sprite.setColor(RANDOM_COLOR);
 
-		radius = (float)texture->getSize().x / 2.0f;
+		box = CollisionBox(&pos, Vector2f(0,0), (float)texture->getSize().x / 2.0f);
 	}
 
 	virtual ~Orb() {}
@@ -36,9 +36,12 @@ public:
 		pos += vel * elapsedTime;
 	}
 
-	virtual void draw(RenderTarget *window, RenderTarget *monitor) {
+	virtual void draw(RenderTarget *target, RenderTarget *monitor) {
+
 		sprite.setPosition(pos);
-		window->draw(sprite);
+		target->draw(sprite);
+
+		box.draw(target);
 	}
 };
 

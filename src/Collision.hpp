@@ -14,6 +14,7 @@ public:
 	Vector2f pos;
 	float r;
 
+	CollisionBox() {}
 	CollisionBox(Vector2f *offsetParam, Vector2f position, float radius):
 		offset(offsetParam),
 		pos(position),
@@ -31,7 +32,7 @@ public:
 		return false;
 	}
 
-	void draw(RenderTarget *window) {
+	void draw(RenderTarget *target) {
 
 		// for debug
 		sf::CircleShape shape(r);
@@ -39,7 +40,7 @@ public:
 		shape.setOutlineThickness(1);
 		shape.setOutlineColor(sf::Color(250, 150, 100));
 		shape.setPosition((*offset) + pos - Vector2f(r, r));
-		window->draw(shape);
+		target->draw(shape);
 	}
 
 	Vector2f getPosition() {

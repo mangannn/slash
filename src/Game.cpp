@@ -27,7 +27,8 @@ Game::Game() {
 
 	players = new std::vector<Player *>();
 
-	players->push_back(new Player(Vector2f(0,0)));
+	players->push_back(new Player(Vector2f(0,0), 0));
+	players->push_back(new Player(Vector2f(50,0), 1));
 
 	orbs = new std::vector<Orb *>();
 
@@ -119,7 +120,7 @@ void Game::update(float elapsedTime) {
 
 	if (orbTimer > 2) {
 		orbTimer -= 2;
-		orbs->push_back(new Orb(Vector2f(0,0), 100.0f * Vector2f(RANDOM2, RANDOM2)));
+		orbs->push_back(new Orb(Vector2f(0,0), 40.0f * Vector2f(RANDOM2, RANDOM2)));
 	}
 
 
@@ -145,15 +146,12 @@ void Game::update(float elapsedTime) {
 
 	for (unsigned int j = 0; j < players->size(); j++) {
 		for (unsigned int i = 0; i < orbs->size(); i++) {
-			Vector2f swS = players->at(j)->pos;
-			Vector2f swE = swS + players->at(j)->swordDir * players->at(j)->swordLen;
-
-			Vector2f v = swE - swS;
-			Vector2f u = orbs->at(i)->pos - swS;
-			Vector2f b = orbs->at(i)->vel;
-
-			if (size(u - (dot(v, u) / sqrSize(v)) * v) < orbs->at(i)->radius) {
-				orbs->at(i)->vel = b - 2 * (dot(v, b) / sqrSize(v)) * v;
+			if (CollisionBox::check(players->at(j)->swordBox, orbs->at(i)->box)) {
+				Vector2f diff = players->at(j)->swordBox.getPosition() - orbs->at(i)->pos;
+				std::cout << "dadasd\n";
+				orbs->at(i)->vel = orbs->at(i)->vel - 2 * (dot(orbs->at(i)->vel, diff) / sqrSize(diff)) * diff;
+			} else if (CollisionBox::check(players->at(j)->bodyBox, orbs->at(i)->box)) {
+				std::cout << "Auuu!\n";
 			}
 		}
 	}
@@ -162,13 +160,14 @@ void Game::update(float elapsedTime) {
 
 
 
-void Game::draw(RenderTarget *window) {
+void Game::draw(RenderTarget *target) {
 
-	window->clear();
+	target->clear();
     gamePixelArea.clear();
+
     monitorPixelArea.clear(Color(0, 0, 0, 0));
-    Vector2u windowSize = window->getSize();
-	float aspect = ((float)windowSize.x / (float)windowSize.y);
+    Vector2u targetSize = target->getSize();
+	float aspect = ((float)targetSize.x / (float)targetSize.y);
 
 	// set game view
 	{
@@ -199,14 +198,14 @@ void Game::draw(RenderTarget *window) {
 		}
 
 		Vector2f newPosition = (smallest_most + largest_most) / 2.0f;
-		Vector2f newSize = Vector2f(aspect, 1.0f) * scale_multiply;
-
-		Vector2f currentSize = gameView.getSize();
 		Vector2f currentPosition = gameView.getCenter();
 
-		gameView.setSize((newSize - currentSize) / 4.0f + currentSize);
-		// gameView.setSize(newSize);
 		gameView.setCenter((newPosition - currentPosition) / 4.0f + currentPosition);
+
+		float newMultiply = scale_multiply;
+		float currentMultiply = gameView.getSize().y;
+
+		gameView.setSize(Vector2f(aspect, 1.0f) * ((newMultiply - currentMultiply) / 4.0f + currentMultiply));
 		
 		gamePixelArea.setView(gameView);
 
@@ -231,15 +230,15 @@ void Game::draw(RenderTarget *window) {
     {
         Sprite sprite(gamePixelArea.getTexture());
         sprite.setOrigin(gamePixelArea.getSize().x / 2, gamePixelArea.getSize().y / 2);
-        sprite.setPosition((int)(windowSize.x / 2.f), (int)(windowSize.y / 2.f));
+        sprite.setPosition((int)(targetSize.x / 2.f), (int)(targetSize.y / 2.f));
         sprite.setScale(scaleFactor,scaleFactor);
-        window->draw(sprite);
+        target->draw(sprite);
     }
     
     {
         Sprite sprite(monitorPixelArea.getTexture());
         sprite.setOrigin(gamePixelArea.getSize().x / 2 * scaleFactor, gamePixelArea.getSize().y / 2 * scaleFactor);
-        sprite.setPosition((int)(windowSize.x / 2.f), (int)(windowSize.y / 2.f));
-        window->draw(sprite);
+        sprite.setPosition((int)(targetSize.x / 2.f), (int)(targetSize.y / 2.f));
+        target->draw(sprite);
     }
 }
