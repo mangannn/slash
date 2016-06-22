@@ -3,21 +3,7 @@
 
 #include <SFML/System.hpp>
 
-extern sf::Texture startScreenTex;
-extern sf::Vector2i startScreenTexSize;
-
-
-extern sf::Texture standingTex, runningTex;
-extern sf::Texture bodyTex, eyesTex, mouthTex;
-extern sf::Texture bollTex;
-
-extern sf::Vector2i playerSpriteSize;
-
-extern sf::Vector2i bodySize;
-extern sf::Vector2i eyesSize;
-extern sf::Vector2i mouthSize;
-
-extern sf::Vector2i bollSize;
+sf::Texture *getTexture(const std::string filename);
 
 extern sf::Font font;
 

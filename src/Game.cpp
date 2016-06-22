@@ -5,8 +5,6 @@
 
 #include "Game.hpp"
 
-#include "obj/Rock.hpp"
-
 #include "IvansTestAni/head.hpp"
 
 Game::Game() {
@@ -27,8 +25,6 @@ Game::Game() {
 	objects = new std::vector<Object *>();
 
 
-
-	objects->push_back(new Rock(Vector2f(0,0)));
     objects->push_back(new RotAni(Vector2f(0,-10)));
 
 	gameView.setSize(Vector2f(1000, 1000));
@@ -72,10 +68,6 @@ Game::~Game() {
 
 void Game::eventHandle(sf::Event event) {
 
-	for (unsigned int i = 0; i < players->size(); i++) {
-		players->at(i)->controls->eventHandle(event);
-	}
-
 	switch (event.type) {
 		case sf::Event::KeyPressed: {
 
@@ -112,7 +104,7 @@ void Game::update(float elapsedTime) {
 
 	if (orbTimer > 2) {
 		orbTimer -= 2;
-		orbs->push_back(new Orb(Vector2f(0,0), 70.0f * Vector2f(RANDOM2, RANDOM2)));
+		orbs->push_back(new Orb(Vector2f(0,0), 100.0f * Vector2f(RANDOM2, RANDOM2)));
 	}
 
 
@@ -128,7 +120,16 @@ void Game::update(float elapsedTime) {
 
 	for (unsigned int j = 0; j < players->size(); j++) {
 		for (unsigned int i = 0; i < orbs->size(); i++) {
-			
+			Vector2f swS = players->at(j)->pos;
+			Vector2f swE = swS + players->at(j)->swordDir * players->at(j)->swordLen;
+
+			Vector2f v = swE - swS;
+			Vector2f u = orbs->at(i)->pos - swS;
+			Vector2f b = orbs->at(i)->vel;
+
+			if (size(u - (dot(v, u) / sqrSize(v)) * v) < orbs->at(i)->radius) {
+				orbs->at(i)->vel = b - 2 * (dot(v, b) / sqrSize(v)) * v;
+			}
 		}
 	}
 }

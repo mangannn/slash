@@ -17,10 +17,9 @@ using namespace std;
 Player::Player(Vector2f position):
 	Object(position)
 {
-
-	texture.loadFromFile("media/images/char.png");
-	sprite.setTexture(texture);
-	sprite.setOrigin(sf::Vector2f((float)texture.getSize().x / 2.0f, (float)texture.getSize().y));
+	texture = getTexture("media/images/char.png");
+	sprite.setTexture(*texture);
+	sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 }
 
 void Player::update(float elapsedTime) {
@@ -38,13 +37,13 @@ void Player::update(float elapsedTime) {
 	Vector2f v2 = Vector2f(x, y);
 
 	float sv2 = size(v2);
+	swordLen = 40;
 
 	if (sv2 > JOYSTICK_THRESHOLD) {
+		swordLen *= sv2;
 		swordDir = v2 / sv2;
 	}
 
-
-	swordLen = 40;
 
 	if (size(v) > JOYSTICK_THRESHOLD) {
 		pos += (v * MOVEMENT_SPEED) * elapsedTime;
@@ -58,7 +57,7 @@ void Player::draw(RenderWindow *window) {
 
 
 
-	Vector2f swordOri = pos + Vector2f(0, -(float)texture.getSize().y / 2.0);
+	Vector2f swordOri = pos + Vector2f(0, -(float)texture->getSize().y / 2.0);
 
 	sf::Vertex line[] =
 	{

@@ -2,13 +2,15 @@
 #define _ORB_H_
 
 #include "../Object.hpp"
+#include "../Functions.hpp"
+#include "../Resources.hpp"
+
 
 class Orb: public Object {
 
 public:
 
 	sf::Sprite sprite;
-	sf::Texture texture;
 
 	Vector2f vel;
 
@@ -19,11 +21,13 @@ public:
 		vel(velocity)
 	{
 
-		texture.loadFromFile("media/images/orb.png");
-		sprite.setTexture(texture);
-		sprite.setOrigin(sf::Vector2f((float)texture.getSize().x / 2.0f, (float)texture.getSize().y / 2.0f));
+		sf::Texture *texture = getTexture("media/images/orb.png");
+		sprite.setTexture(*texture);
+		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y / 2.0f));
 
-		radius = (float)texture.getSize().x / 2.0f;
+		sprite.setColor(RANDOM_COLOR);
+
+		radius = (float)texture->getSize().x / 2.0f;
 	}
 
 	virtual ~Orb() {}
