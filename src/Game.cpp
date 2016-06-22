@@ -1,10 +1,10 @@
 #include <math.h>
+#include <iostream>
 
 #include "Functions.hpp"
 
 #include "Game.hpp"
 
-#include "obj/Rock.hpp"
 #include "IvansTestAni/head.hpp"
 
 Game::Game() {
@@ -14,35 +14,26 @@ Game::Game() {
     
 	mapTex.loadFromFile("media/images/map.png");
 	mapSprite.setTexture(mapTex);
+	mapSprite.setOrigin(sf::Vector2f((float)mapTex.getSize().x / 2.0f, (float)mapTex.getSize().y / 2.0f));
+	mapSprite.setScale(10.0f, 10.0f);
 
 
 	players = new std::vector<Player *>();
 
+	players->push_back(new Player(Vector2f(0,0)));
 
-	int a[] = {13, 12};
-	players->push_back(new Player(Vector2f(0,0), new KeyboardControls(73, 74, 71, 72, a, 2)));
-	//int a[] = {0, 1};
-	//players->push_back(new Player(Vector2f(0,0), new JoystickControls(0, 0, 1, a, 2)));
+	orbs = new std::vector<Orb *>();
 
 
 	objects = new std::vector<Object *>();
 
-	for (unsigned int i = 0; i < players->size(); i++) {
-		objects->push_back(players->at(i));
-	}
 
-
-
-	objects->push_back(new Rock(Vector2f(0,0)));
     objects->push_back(new RotAni(Vector2f(0,-10)));
 
 	gameView.setSize(Vector2f(1000, 1000));
 	gameView.setCenter(Vector2f(0,0));;
 }
 Game::~Game() {
-
-	// dont delete the objects i the player vector because they are also a part och the objects vector
-	delete players;
 
 	{
 		Object *temp;
@@ -53,6 +44,24 @@ Game::~Game() {
 		}
 		delete objects;
 	}
+	{
+		Object *temp;
+		while (!orbs->empty()) {
+			temp = orbs->back();
+			delete temp;
+			orbs->pop_back();
+		}
+		delete orbs;
+	}
+	{
+		Object *temp;
+		while (!players->empty()) {
+			temp = players->back();
+			delete temp;
+			players->pop_back();
+		}
+		delete players;
+	}
 }
 
 
@@ -62,16 +71,12 @@ Game::~Game() {
 
 void Game::eventHandle(sf::Event event) {
 
-	for (unsigned int i = 0; i < players->size(); i++) {
-		players->at(i)->controls->eventHandle(event);
-	}
-
 	switch (event.type) {
 		case sf::Event::KeyPressed: {
 
 			switch (event.key.code) {
 				case sf::Keyboard::Return: {
-					printf("enter\n");
+					std::cout << orbs->size() << std::endl;
 				} break;
 				default: break;
 			}
@@ -90,6 +95,45 @@ void Game::update(float elapsedTime) {
 
 	for (unsigned int i = 0; i < objects->size(); i++) {
 		objects->at(i)->update(elapsedTime);
+	}
+	for (unsigned int i = 0; i < orbs->size(); i++) {
+		orbs->at(i)->update(elapsedTime);
+	}
+	for (unsigned int i = 0; i < players->size(); i++) {
+		players->at(i)->update(elapsedTime);
+	}
+
+	orbTimer += elapsedTime;
+
+	if (orbTimer > 2) {
+		orbTimer -= 2;
+		orbs->push_back(new Orb(Vector2f(0,0), 100.0f * Vector2f(RANDOM2, RANDOM2)));
+	}
+
+
+	for (unsigned int i = 0; i < orbs->size(); i++) {
+		if (size(orbs->at(i)->pos - gameView.getCenter()) > 400) {
+			Orb *o = orbs->at(i);
+			orbs->erase(orbs->begin() + i);
+			delete o;
+			i -= 1;
+		}
+	}
+
+
+	for (unsigned int j = 0; j < players->size(); j++) {
+		for (unsigned int i = 0; i < orbs->size(); i++) {
+			Vector2f swS = players->at(j)->pos;
+			Vector2f swE = swS + players->at(j)->swordDir * players->at(j)->swordLen;
+
+			Vector2f v = swE - swS;
+			Vector2f u = orbs->at(i)->pos - swS;
+			Vector2f b = orbs->at(i)->vel;
+
+			if (size(u - (dot(v, u) / sqrSize(v)) * v) < orbs->at(i)->radius) {
+				orbs->at(i)->vel = b - 2 * (dot(v, b) / sqrSize(v)) * v;
+			}
+		}
 	}
 }
 
@@ -124,9 +168,6 @@ void Game::draw(RenderTarget *window) {
 			}
 		}
 
-		smallest_most.x /= aspect;
-		largest_most.x /= aspect;
-
 
 		float scale_multiply = size(smallest_most - largest_most) + 100.0f;
 
@@ -150,6 +191,12 @@ void Game::draw(RenderTarget *window) {
 	gamePixelArea.draw(mapSprite);
 
 
+	for (unsigned int i = 0; i < orbs->size(); i++) {
+		orbs->at(i)->draw(window);
+	}
+	for (unsigned int i = 0; i < players->size(); i++) {
+		players->at(i)->draw(window);
+	}
 	for (unsigned int i = 0; i < objects->size(); i++) {
 		objects->at(i)->draw(&gamePixelArea);
 	}

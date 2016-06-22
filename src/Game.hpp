@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "Player.hpp"
+#include "obj/Orb.hpp"
 
 class Game {
 
@@ -26,7 +27,11 @@ private:
 	sf::Sprite mapSprite;
 
 	std::vector<Object *> *objects;
+	std::vector<Orb *> *orbs;
 	std::vector<Player *> *players;
+
+
+	float orbTimer = 0;
 };
 
 #endif

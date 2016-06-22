@@ -3,61 +3,12 @@
 
 #include <iostream>
 
-using namespace sf;
-using namespace std;
-
 #include "Game.hpp"
 
-#include "InputCodeString.hpp"
-
-#define WINDOW_TITLE ("FLUX!")
-#define FRAMERATE_LIMIT (50)
-
-sf::Texture startScreenTex;
-sf::Vector2i startScreenTexSize(1900, 1500);
-
-sf::Texture standingTex, runningTex;
-sf::Texture bodyTex, eyesTex, mouthTex;
-sf::Texture bollTex;
-
-sf::Vector2i playerSpriteSize(200, 300);
-
-sf::Vector2i bodySize(745, 745);
-sf::Vector2i eyesSize(455, 35);
-sf::Vector2i mouthSize(130, 50);
-
-sf::Vector2i bollSize(125, 125);
-
-sf::Font font;
-
-
-bool load_resources() {
-
-	std::cout << "Loading textures..." << std::endl;
-	/*if (
-		!startScreenTex.loadFromFile("media/images/FLUX.png") ||
-		!bollTex.loadFromFile("media/images/boll/strip.png")) {
-		
-		return false;
-	}*/
-	std::cout << "Done!" << std::endl;
-
-
-	std::cout << "Loading font..." << std::endl;
-	if (!font.loadFromFile("media/fonts/8bitlimo.ttf")) {
-	    return false;
-	}
-	std::cout << "Done!" << std::endl;
-
-	return true;
-}
+#define WINDOW_TITLE ("Slash")
+#define FRAMERATE_LIMIT (60)
 
 int main() {
-
-	if (!load_resources()) {
-		return 1;
-	}
-
 
 	srand(time(NULL));
 
@@ -127,19 +78,7 @@ int main() {
 				} break;
 
 				case sf::Event::JoystickConnected: {
-
-					int id = event.joystickConnect.joystickId;
-
-					std::cout << "Joystick connected:\t" << id << std::endl;
-					std::cout << "Button Count:\t" << sf::Joystick::getButtonCount(id) << std::endl;
-
-					std::cout << "Axises:\t";
-					for (int i = 0; i < sf::Joystick::AxisCount; i++) {
-						if (sf::Joystick::hasAxis(id, (sf::Joystick::Axis)i)) {
-							std::cout << joystickAxisToString(i) << " ";
-						}
-					}
-					std::cout << std::endl;
+					std::cout << "Joystick connected:\t" << event.joystickConnect.joystickId << std::endl;
 				} break;
 				case sf::Event::JoystickDisconnected: {
 					std::cout << "Joystick disconnected:\t" << event.joystickConnect.joystickId << std::endl;

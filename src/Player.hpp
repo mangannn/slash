@@ -2,22 +2,22 @@
 #define _PLAYER_H_
 
 #include "Object.hpp"
-#include "Controls.hpp"
 
-
-class Player: public Object, public Controlled {
+class Player: public Object {
 
 public:
 
-	sf::Texture texture;
+	sf::Texture *texture;
 	sf::Sprite sprite;
 
-	Player(Vector2f position, Controls *controls);
+
+	sf::Vector2f swordDir;
+	float swordLen;
+
+	Player(Vector2f position);
 
 	virtual ~Player() {}
-
-	virtual void eventCallback(int id);
-
+	
 	virtual void update(float elapsedTime);
 
 	virtual void draw(RenderTarget *window);
