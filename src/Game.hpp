@@ -15,12 +15,12 @@ public:
 	virtual void eventHandle(sf::Event event);
 	virtual void update(float elapsedTime);
 
-	virtual void draw(sf::RenderWindow *window);
+	virtual void draw(sf::RenderTarget *window);
 
 private:
 
 	sf::View gameView;
-
+    sf::RenderTexture gamePixelArea;
 
 	sf::Texture mapTex;
 	sf::Sprite mapSprite;

@@ -8,7 +8,10 @@
 #include "IvansTestAni/head.hpp"
 
 Game::Game() {
-
+    
+    gamePixelArea.create(320, 240);
+    gamePixelArea.setSmooth(false);
+    
 	mapTex.loadFromFile("media/images/map.png");
 	mapSprite.setTexture(mapTex);
 
@@ -93,12 +96,12 @@ void Game::update(float elapsedTime) {
 
 
 
-
-void Game::draw(RenderWindow *window) {
+void Game::draw(RenderTarget *window) {
 
 	window->clear();
-
-	float aspect = ((float)window->getSize().x / (float)window->getSize().y);
+    gamePixelArea.clear();
+    Vector2u windowSize = window->getSize();
+	float aspect = ((float)windowSize.x / (float)windowSize.y);
 
 	// set game view
 	{
@@ -140,17 +143,22 @@ void Game::draw(RenderWindow *window) {
 		gameView.setSize((newSize - currentSize) / 4.0f + currentSize);
 		gameView.setCenter((newPosition - currentPosition) / 4.0f + currentPosition);
 		
-		window->setView(gameView);
+		gamePixelArea.setView(gameView);
 
 	}
 
-
-
-	window->draw(mapSprite);
+	gamePixelArea.draw(mapSprite);
 
 
 	for (unsigned int i = 0; i < objects->size(); i++) {
-		objects->at(i)->draw(window);
+		objects->at(i)->draw(&gamePixelArea);
 	}
-
+    
+    gamePixelArea.display();
+    
+    Sprite sprite(gamePixelArea.getTexture());
+    sprite.setOrigin(160, 120);
+    sprite.setPosition(windowSize.x / 2.f, windowSize.y / 2.f);
+    sprite.setScale(3,3);
+    window->draw(sprite);
 }

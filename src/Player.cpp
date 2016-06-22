@@ -38,7 +38,7 @@ void Player::update(float elapsedTime) {
 
 }
 
-void Player::draw(RenderWindow *window) {
+void Player::draw(RenderTarget *window) {
 	sprite.setPosition(pos);
 	window->draw(sprite);
 }

@@ -9,7 +9,10 @@ class RotAni: public Object {
 
 private:
     
-    
+    Color *tintColor(Color *c) {
+        c->r -= 30;
+        return c;
+    }
 
 public:
     
@@ -18,12 +21,12 @@ public:
     Color c_mantel = Color(220, 30, 40);
     const static int CAPECOUNT = 6;
     Vertex vertices[CAPECOUNT] = {
-        Vertex(Vector2f(-2, 0), c_mantel),
-        Vertex(Vector2f( 2, 0), c_mantel),
-        Vertex(Vector2f( 2, 4), c_mantel),
-        Vertex(Vector2f(-2, 4), c_mantel),
-        Vertex(Vector2f(-2, 8), c_mantel),
-        Vertex(Vector2f( 2, 8), c_mantel)
+        Vertex(Vector2f(-10, 0), c_mantel),
+        Vertex(Vector2f( 10, 0), c_mantel),
+        Vertex(Vector2f(-12, 20), c_mantel),
+        Vertex(Vector2f( 11, 20), *tintColor(&c_mantel)),
+        Vertex(Vector2f(-13, 50), *tintColor(&c_mantel)),
+        Vertex(Vector2f( 14, 50), *tintColor(&c_mantel))
     };
     
 	RotAni(Vector2f position):
@@ -39,8 +42,8 @@ public:
         rot += elapsedTime;
     }
 
-	virtual void draw(RenderWindow *window) {
-        window->draw(vertices, CAPECOUNT, Quads);
+	virtual void draw(RenderTarget *window) {
+        window->draw(vertices, CAPECOUNT, TrianglesStrip);
     }
 };
 

@@ -20,7 +20,7 @@ public:
 
 	virtual void update(float elapsedTime) {}
 
-	virtual void draw(RenderWindow *window) {}
+	virtual void draw(RenderTarget *window) {}
 };
 
 #endif
