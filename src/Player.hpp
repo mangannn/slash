@@ -2,6 +2,7 @@
 #define _PLAYER_H_
 
 #include "Object.hpp"
+#include "Collision.hpp"
 
 class Player: public Object {
 
@@ -13,6 +14,8 @@ public:
 
 	sf::Vector2f swordDir;
 	float swordLen;
+
+	CollisionBox walkBox, swordBox;
 
 	Player(Vector2f position);
 

@@ -7,15 +7,12 @@
 
 #include "IvansTestAni/head.hpp"
 
+#include "Collision.hpp"
+
 Game::Game() {
     
     gamePixelArea.create(320, 240);
     gamePixelArea.setSmooth(false);
-    
-	mapTex.loadFromFile("media/images/map.png");
-	mapSprite.setTexture(mapTex);
-	mapSprite.setOrigin(sf::Vector2f((float)mapTex.getSize().x / 2.0f, (float)mapTex.getSize().y / 2.0f));
-	mapSprite.setScale(10.0f, 10.0f);
 
 
 	players = new std::vector<Player *>();
@@ -27,6 +24,8 @@ Game::Game() {
 
 	objects = new std::vector<Object *>();
 
+	map = new Map();
+
 
     objects->push_back(new RotAni(Vector2f(0,-10)));
 
@@ -34,6 +33,8 @@ Game::Game() {
 	gameView.setCenter(Vector2f(0,0));;
 }
 Game::~Game() {
+
+	delete map;
 
 	{
 		Object *temp;
@@ -66,9 +67,6 @@ Game::~Game() {
 
 
 
-
-
-
 void Game::eventHandle(sf::Event event) {
 
 	switch (event.type) {
@@ -77,6 +75,9 @@ void Game::eventHandle(sf::Event event) {
 			switch (event.key.code) {
 				case sf::Keyboard::Return: {
 					std::cout << orbs->size() << std::endl;
+				} break;
+				case sf::Keyboard::A: {
+					std::cout << players->at(0)->pos.x << " :\t" << players->at(0)->pos.y << std::endl;
 				} break;
 				default: break;
 			}
@@ -112,7 +113,7 @@ void Game::update(float elapsedTime) {
 
 
 	for (unsigned int i = 0; i < orbs->size(); i++) {
-		if (size(orbs->at(i)->pos - gameView.getCenter()) > 400) {
+		if (sqrSize(orbs->at(i)->pos - gameView.getCenter()) > 400 * 400) {
 			Orb *o = orbs->at(i);
 			orbs->erase(orbs->begin() + i);
 			delete o;
@@ -120,6 +121,16 @@ void Game::update(float elapsedTime) {
 		}
 	}
 
+
+	for (unsigned int j = 0; j < players->size(); j++) {
+		for (unsigned int i = 0; i < map->numStatic; i++) {
+			if (CollisionBox::check(players->at(j)->walkBox, map->staticBoxes[i])) {
+				float coll_dist = players->at(j)->walkBox.r + map->staticBoxes[i].r;
+				Vector2f diff = players->at(j)->walkBox.getPosition() - map->staticBoxes[i].getPosition();
+				players->at(j)->pos += diff * (coll_dist / size(diff) - 1);
+			}
+		}
+	}
 
 	for (unsigned int j = 0; j < players->size(); j++) {
 		for (unsigned int i = 0; i < orbs->size(); i++) {
@@ -188,7 +199,7 @@ void Game::draw(RenderTarget *window) {
 
 	}
 
-	gamePixelArea.draw(mapSprite);
+	map->draw(&gamePixelArea);
 
 
 	for (unsigned int i = 0; i < orbs->size(); i++) {
