@@ -1,18 +1,28 @@
 #include <math.h>
 #include <iostream>
 
+#include "Resources.hpp"
 #include "Functions.hpp"
 
 #include "Game.hpp"
 
 #include "IvansTestAni/head.hpp"
+#include "IvansTestAni/titelEffekt.hpp"
+
 
 #include "Collision.hpp"
 
 Game::Game() {
     
+    scaleFactor = 3.0;
+    
     gamePixelArea.create(320, 240);
-    gamePixelArea.setSmooth(false);
+    monitorPixelArea.create((int)(gamePixelArea.getSize().x * scaleFactor), (int)(gamePixelArea.getSize().y * scaleFactor));
+    
+    //gamePixelArea.setSmooth(false);
+    
+    setMainFont("media/fonts/pixlfont.ttf");
+    
 
 
 	players = new std::vector<Player *>();
@@ -25,10 +35,11 @@ Game::Game() {
 
 	objects = new std::vector<Object *>();
 
+
 	map = new Map();
 
-
     objects->push_back(new RotAni(Vector2f(0,-10)));
+    objects->push_back(new TitelEffekt(Vector2f(120,100)));
 
 	gameView.setSize(Vector2f(1000, 1000));
 	gameView.setCenter(Vector2f(0,0));;
@@ -153,6 +164,8 @@ void Game::draw(RenderTarget *target) {
 
 	target->clear();
     gamePixelArea.clear();
+
+    monitorPixelArea.clear(Color(0, 0, 0, 0));
     Vector2u targetSize = target->getSize();
 	float aspect = ((float)targetSize.x / (float)targetSize.y);
 
@@ -186,6 +199,7 @@ void Game::draw(RenderTarget *target) {
 
 		Vector2f newPosition = (smallest_most + largest_most) / 2.0f;
 		Vector2f currentPosition = gameView.getCenter();
+
 		gameView.setCenter((newPosition - currentPosition) / 4.0f + currentPosition);
 
 		float newMultiply = scale_multiply;
@@ -201,20 +215,30 @@ void Game::draw(RenderTarget *target) {
 
 
 	for (unsigned int i = 0; i < orbs->size(); i++) {
-		orbs->at(i)->draw(&gamePixelArea);
+		orbs->at(i)->draw(&gamePixelArea, &monitorPixelArea);
 	}
 	for (unsigned int i = 0; i < players->size(); i++) {
-		players->at(i)->draw(&gamePixelArea);
+		players->at(i)->draw(&gamePixelArea, &monitorPixelArea);
 	}
 	for (unsigned int i = 0; i < objects->size(); i++) {
-		objects->at(i)->draw(&gamePixelArea);
+		objects->at(i)->draw(&gamePixelArea, &monitorPixelArea);
 	}
     
     gamePixelArea.display();
+    monitorPixelArea.display();
     
-    Sprite sprite(gamePixelArea.getTexture());
-    sprite.setOrigin(gamePixelArea.getSize().x / 2.f, gamePixelArea.getSize().y / 2.f);
-    sprite.setPosition(targetSize.x / 2.f, targetSize.y / 2.f);
-    sprite.setScale(3,3);
-    target->draw(sprite);
+    {
+        Sprite sprite(gamePixelArea.getTexture());
+        sprite.setOrigin(gamePixelArea.getSize().x / 2, gamePixelArea.getSize().y / 2);
+        sprite.setPosition((int)(targetSize.x / 2.f), (int)(targetSize.y / 2.f));
+        sprite.setScale(scaleFactor,scaleFactor);
+        target->draw(sprite);
+    }
+    
+    {
+        Sprite sprite(monitorPixelArea.getTexture());
+        sprite.setOrigin(gamePixelArea.getSize().x / 2 * scaleFactor, gamePixelArea.getSize().y / 2 * scaleFactor);
+        sprite.setPosition((int)(targetSize.x / 2.f), (int)(targetSize.y / 2.f));
+        target->draw(sprite);
+    }
 }

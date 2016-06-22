@@ -24,11 +24,13 @@ private:
 
 	sf::View gameView;
     sf::RenderTexture gamePixelArea;
+    sf::RenderTexture monitorPixelArea;
 
 
 	std::vector<Object *> *objects;
 	std::vector<Orb *> *orbs;
 	std::vector<Player *> *players;
+    float scaleFactor;
 
 	Map *map;
 
