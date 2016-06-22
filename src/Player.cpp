@@ -15,7 +15,9 @@ using namespace std;
 
 
 Player::Player(Vector2f position):
-	Object(position)
+	Object(position),
+	walkBox(&pos, Vector2f(0, -14), 14),
+	swordBox(&pos, Vector2f(0, 10), 4)
 {
 	texture = getTexture("media/images/char.png");
 	sprite.setTexture(*texture);
@@ -45,6 +47,9 @@ void Player::update(float elapsedTime) {
 	}
 
 
+	Vector2f swordOri = Vector2f(0, -(float)texture->getSize().y / 2.0);
+	swordBox.pos = swordOri + swordDir * swordLen;
+
 	if (size(v) > JOYSTICK_THRESHOLD) {
 		pos += (v * MOVEMENT_SPEED) * elapsedTime;
 	}
@@ -55,6 +60,8 @@ void Player::draw(RenderTarget *window, RenderTarget *monitor) {
 	sprite.setPosition(pos);
 	window->draw(sprite);
 
+	walkBox.draw(window);
+	swordBox.draw(window);
 
 
 	Vector2f swordOri = pos + Vector2f(0, -(float)texture->getSize().y / 2.0);

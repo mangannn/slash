@@ -5,6 +5,8 @@
 #include "Player.hpp"
 #include "obj/Orb.hpp"
 
+#include "Map.hpp"
+
 class Game {
 
 public:
@@ -24,15 +26,15 @@ private:
     sf::RenderTexture gamePixelArea;
     sf::RenderTexture monitorPixelArea;
 
-	sf::Texture mapTex;
-	sf::Sprite mapSprite;
 
 	std::vector<Object *> *objects;
 	std::vector<Orb *> *orbs;
 	std::vector<Player *> *players;
-    
     float scaleFactor;
-    
+
+	Map *map;
+
+
 	float orbTimer = 0;
 };
 
