@@ -2,6 +2,11 @@
 #define _MAP_H_
 
 #include "Functions.hpp"
+#include "obj/Image.hpp"
+
+#include <iostream>
+
+#include <string.h>
 
 class Map {
 
@@ -11,29 +16,16 @@ public:
 	sf::Sprite mapSprite;
 
 
-	const static int numStatic = 7;
-	CollisionBox staticBoxes[numStatic] = {
-		CollisionBox(NULL, Vector2f(100, 100), 50),
-		CollisionBox(NULL, Vector2f(-40, 240), 130),
+	unsigned int numStatic = 0;
+	CollisionBox staticBoxes[1000];
 
-		CollisionBox(NULL, Vector2f(-400, 10), 300),
-		CollisionBox(NULL, Vector2f(-100, -250), 100),
-		CollisionBox(NULL, Vector2f(300, -220), 120),
-
-		CollisionBox(NULL, Vector2f(200, 220), 90),
-		CollisionBox(NULL, Vector2f(250, 20), 130)
-	};
+	unsigned int numImages = 0;
+	cs::Image images[1000];
 	
 
 	Map() {
 
-		Vector2f *origo = new Vector2f(0,0);
-
-		for (int i = 0; i < numStatic; i++) {
-			staticBoxes[i].offset = origo;
-		}
-
-
+		loadMap("media/map.txt");
     
 		mapTex.loadFromFile("media/images/map.png");
 		mapSprite.setTexture(mapTex);
@@ -45,9 +37,76 @@ public:
 
 		target->draw(mapSprite);
 
-		for (int i = 0; i < numStatic; i++) {
+		for (unsigned int i = 0; i < numImages; i++) {
+			images[i].draw(target);
+		}
+		for (unsigned int i = 0; i < numStatic; i++) {
 			staticBoxes[i].draw(target);
 		}
+	}
+
+private:
+
+	void loadMap(const char* path) {
+
+
+		Vector2f *origo = new Vector2f(0,0);
+
+
+		FILE *file;
+
+		if (!(file = fopen(path, "r"))) {
+			std::cout << "Failed to open file: " << path << std::endl;
+			exit(-1);
+		}
+
+		const int MAXSTR = 256;
+		char buffer[MAXSTR];
+
+		char str1[MAXSTR];
+		char str2[MAXSTR];
+
+		float x = 0, y = 0, r = 0;
+
+		int num_back;
+
+		while (fgets(buffer, MAXSTR, file)) {
+
+			num_back = sscanf(buffer, 
+				"%[^{\n]{%[^}\n]}", 
+				str1, str2);
+
+			if (num_back != 2) {
+				continue;
+			}
+
+			if (strcmp(str1, "box") == 0) {
+
+				num_back = sscanf(str2, 
+					"%f,%f,%f", 
+					&x, &y, &r);
+
+				if (num_back != 3) {
+					continue;
+				}
+
+				staticBoxes[numStatic] = CollisionBox(origo, Vector2f(x, y), r);
+				numStatic += 1;
+			} else if (strcmp(str1, "img") == 0) {
+
+				num_back = sscanf(str2, 
+					"%[^,\n],%f,%f", 
+					str1, &x, &y);
+
+				if (num_back != 3) {
+					continue;
+				}
+
+				images[numImages] = cs::Image(Vector2f(x, y), str1);
+				numImages += 1;
+			}
+		}
+		fclose(file);
 	}
 
 };
