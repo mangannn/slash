@@ -19,6 +19,7 @@ public:
     Vector2i textureSize;
     Sprite sprite;
     
+    
 
 	TitelEffekt(Vector2f position):
 		Object(position)
