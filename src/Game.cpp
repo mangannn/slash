@@ -204,7 +204,7 @@ void Game::draw(RenderTarget *window) {
     gamePixelArea.display();
     
     Sprite sprite(gamePixelArea.getTexture());
-    sprite.setOrigin(160, 120);
+    sprite.setOrigin(gamePixelArea.getSize().x / 2.f, gamePixelArea.getSize().y / 2.f);
     sprite.setPosition(windowSize.x / 2.f, windowSize.y / 2.f);
     sprite.setScale(3,3);
     window->draw(sprite);
