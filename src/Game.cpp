@@ -10,6 +10,9 @@
 #include "IvansTestAni/titelEffekt.hpp"
 
 
+#include "obj/Enemy.hpp"
+
+
 #include "Collision.hpp"
 
 Game::Game() {
@@ -40,6 +43,9 @@ Game::Game() {
 
     objects->push_back(new RotAni(Vector2f(0,-10)));
     objects->push_back(new TitelEffekt(Vector2f(120,100)));
+
+
+    objects->push_back(new Enemy(Vector2f(100,-100)));
 
 	gameView.setSize(Vector2f(1000, 1000));
 	gameView.setCenter(Vector2f(0,0));;
@@ -167,7 +173,7 @@ void Game::draw(RenderTarget *target) {
 
     monitorPixelArea.clear(Color(0, 0, 0, 0));
     Vector2u targetSize = target->getSize();
-	float aspect = ((float)targetSize.x / (float)targetSize.y);
+	//float aspect = ((float)targetSize.x / (float)targetSize.y);
 
 	// set game view
 	{
@@ -204,6 +210,8 @@ void Game::draw(RenderTarget *target) {
 
 		float newMultiply = scale_multiply;
 		float currentMultiply = gameView.getSize().y;
+
+		float aspect = ((float)gamePixelArea.getSize().x / (float)gamePixelArea.getSize().y);
 
 		gameView.setSize(Vector2f(aspect, 1.0f) * ((newMultiply - currentMultiply) / 4.0f + currentMultiply));
 		
