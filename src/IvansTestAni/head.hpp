@@ -42,8 +42,8 @@ public:
         rot += elapsedTime;
     }
 
-	virtual void draw(RenderTarget *window) {
-        window->draw(vertices, CAPECOUNT, TrianglesStrip);
+	virtual void draw(RenderTarget *target) {
+        target->draw(vertices, CAPECOUNT, TrianglesStrip);
     }
 };
 
