@@ -25,9 +25,9 @@ public:
 
 	Map() {
 
-		loadMap("media/maps/waterfall.txt");
+		loadMap("media/maps/forest.txt");
     
-		mapTex.loadFromFile("media/maps/waterfall.png");
+		mapTex.loadFromFile("media/maps/forest.png");
 		mapSprite.setTexture(mapTex);
 		mapSprite.setOrigin(sf::Vector2f((float)mapTex.getSize().x / 2.0f, (float)mapTex.getSize().y / 2.0f));
 	}

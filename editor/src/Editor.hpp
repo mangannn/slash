@@ -47,7 +47,7 @@ class Editor {
 
 public:
 
-	std::string mapFilename = "media/maps/waterfall.txt";
+	std::string mapFilename = "media/maps/forest.txt";
 
 	sf::View mapView, guiView;
 
@@ -82,7 +82,7 @@ public:
 	{
 		loadMap(mapFilename.c_str());
     
-		mapTex.loadFromFile("media/maps/waterfall.png");
+		mapTex.loadFromFile("media/maps/forest.png");
 		mapSprite.setTexture(mapTex);
 		mapSprite.setOrigin(sf::Vector2f((float)mapTex.getSize().x / 2.0f, (float)mapTex.getSize().y / 2.0f));
 
@@ -104,7 +104,7 @@ public:
         helpText.setString(sf::String(
         	"h:\tthis help text\ns:\tsave\n1:\tstate 1\n2:\tstate 2\nz:\tdelete selected object\n\nMouse:\n\n") + sf::String(
         	"right:     move screen\nleft:      select object\nleft+ctrl:  move selected object\n") + sf::String(
-        	"left+shift: copy selected object\nwheel:     zoom\nwheel+alt:   change size"
+        	"left+shift: copy selected object\nwheel:     zoom\nwheel+alt:   change size (collision)"
         	));
 	}
 
