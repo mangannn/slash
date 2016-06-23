@@ -7,8 +7,40 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "obj/Image.hpp"
 #include "Collision.hpp"
+
+
+#include "Resources.hpp"
+
+
+class ImageM {
+
+public:
+
+	Vector2f pos;
+
+	sf::Sprite sprite;
+
+	std::string filename;
+
+	ImageM(Vector2f position, std::string filenameParam):
+		pos(position),
+		filename(filenameParam)
+	{
+
+		sf::Texture *texture = getTexture(filename);
+		sprite.setTexture(*texture);
+		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y / 2.0f));
+	}
+
+	virtual ~ImageM() {}
+
+	virtual void draw(RenderTarget *target) {
+		sprite.setPosition(pos);
+		target->draw(sprite);
+	}
+};
+
 
 class Editor {
 
@@ -21,7 +53,7 @@ public:
 	sf::Texture mapTex;
 	sf::Sprite mapSprite;
 
-	std::vector<cs::Image> images;
+	std::vector<ImageM> images;
 	std::vector<CollisionBox> staticBoxes;
 
 
@@ -56,7 +88,7 @@ public:
 	}
 
 
-	void eventHandle(sf::Event event, sf::RenderTarget *target) {
+	void eventHandle(sf::Event event, sf::RenderWindow *target) {
 		switch (event.type) {
 			case sf::Event::MouseMoved: {
 				if (mouseMove) {
@@ -80,42 +112,14 @@ public:
 							}
 						} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
 							if (state == 0) {
-								staticBoxes.push_back(CollisionBox(origo, coord, 100));
+								staticBoxes.push_back(CollisionBox(origo, coord, staticBoxes.at(selected).r));
 								selected = staticBoxes.size() - 1;
 							} else {
-								images.push_back(cs::Image(coord, "media/images/gran.png"));
+								images.push_back(ImageM(coord, "media/images/gran.png"));
 								selected = images.size() - 1;
 							}
 						} else {
-							if (state == 0) {
-
-								int s = 0;
-								float dist = size(staticBoxes.at(s).pos - coord);
-
-								for (unsigned int i = 1; i < staticBoxes.size(); i++) {
-									float d = size(staticBoxes.at(i).pos - coord);
-									if (d < dist) {
-										s = i;
-										dist = d;
-									}
-								}
-
-								selected = s;
-
-							} else {
-								int s = 0;
-								float dist = size(images.at(s).pos - coord);
-
-								for (unsigned int i = 1; i < images.size(); i++) {
-									float d = size(images.at(i).pos - coord);
-									if (d < dist) {
-										s = i;
-										dist = d;
-									}
-								}
-
-								selected = s;
-							}
+							selectClosest(coord);
 						}
 					} break;
 					case sf::Mouse::Right: {
@@ -135,23 +139,42 @@ public:
 				}
 			} break;
 			case sf::Event::MouseWheelMoved: {
-				mapView.zoom(event.mouseWheel.delta * 0.1f + 1.0f);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
+					if (state == 0) {
+						staticBoxes.at(selected).r *= 1.f + (0.1f * event.mouseWheel.delta);
+					} else {
+
+					}
+				} else {
+					mapView.zoom(1.f + (0.1f * event.mouseWheel.delta));
+				}
 			} break;			
 			case sf::Event::KeyPressed: {
 
 				switch (event.key.code) {
 					case sf::Keyboard::Return: {
+						if (state == 0) {
+							if (staticBoxes.size() > 1) {
+								staticBoxes.erase(staticBoxes.begin() + selected);
+								selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target)));
+							}
+						} else {
+							if (images.size() > 1) {
+								images.erase(images.begin() + selected);
+								selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target)));
+							}
+						}
 					} break;
 					case sf::Keyboard::S: {
 						saveMap(mapFilename.c_str());
 					} break;
 					case sf::Keyboard::Num1: {
 						state = 0;
-						selected = 0;
+						selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target)));
 					} break;
 					case sf::Keyboard::Num2: {
 						state = 1;
-						selected = 0;
+						selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target)));
 					} break;
 					default: break;
 				}
@@ -198,6 +221,55 @@ public:
 
 		target->setView(mapView);
 	}
+
+
+
+
+
+
+	void selectClosest(Vector2f coord) {
+
+		if (state == 0) {
+
+			int s = 0;
+			float dist = 100000000.0f;
+
+			for (unsigned int i = 0; i < staticBoxes.size(); i++) {
+				float d = size(staticBoxes.at(i).pos - coord);
+				if (d < dist) {
+					s = i;
+					dist = d;
+				}
+			}
+
+			selected = s;
+
+		} else {
+			int s = 0;
+			float dist = 100000000.0f;
+
+			for (unsigned int i = 0; i < images.size(); i++) {
+				float d = size(images.at(i).pos - coord);
+				if (d < dist) {
+					s = i;
+					dist = d;
+				}
+			}
+
+			selected = s;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 	void loadMap(const char* path) {
 
@@ -251,7 +323,7 @@ public:
 				}
 
 
-				images.push_back(cs::Image(Vector2f(x, y), str1));
+				images.push_back(ImageM(Vector2f(x, y), str1));
 			}
 		}
 		fclose(file);
@@ -280,7 +352,7 @@ public:
 
 			if (fprintf(file, 
 				"img{%s, %f, %f}\n", 
-				"#######", images.at(i).pos.x, images.at(i).pos.y) < 1) {
+				images.at(i).filename.c_str(), images.at(i).pos.x, images.at(i).pos.y) < 1) {
 
 				std::cout << "Error writeing to file: " << path << std::endl;
 				exit(-1);
