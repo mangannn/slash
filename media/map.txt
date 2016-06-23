@@ -13,8 +13,8 @@ box{73.367287, -354.990448, 121.000000}
 box{-180.537064, 246.306290, 135.991577}
 box{146.338425, 283.285950, 12.709328}
 box{259.755219, 162.551910, 12.709328}
-img{media/images/gran.png, 85.240715, 69.451942}
-img{media/images/gran.png, 87.045540, 121.790810}
+img{media/images/bigtree.png, 85.240715, 69.451942}
+img{media/images/bullet.png, 87.045540, 121.790810}
 img{media/images/gran.png, 107.800598, 91.109406}
 img{media/images/gran.png, 118.629333, 120.888405}
 img{media/images/gran.png, 127.653275, 71.256744}

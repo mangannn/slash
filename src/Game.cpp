@@ -29,7 +29,7 @@ Game::Game() {
 	players = new std::vector<Player *>();
 
 	players->push_back(new Player(Vector2f(0,0), 0));
-	players->push_back(new Player(Vector2f(50,0), 1));
+	//players->push_back(new Player(Vector2f(50,0), 1));
 
 	orbs = new std::vector<Orb *>();
 
@@ -197,8 +197,8 @@ void Game::draw(RenderTarget *target) {
 
 		float scale_multiply = size(smallest_most - largest_most) + 100.0f;
 
-		if (scale_multiply < 240.0f) {
-			scale_multiply = 240.0f;
+		if (scale_multiply < 300.0f) {
+			scale_multiply = 300.0f;
 		}
 
 		Vector2f newPosition = (smallest_most + largest_most) / 2.0f;

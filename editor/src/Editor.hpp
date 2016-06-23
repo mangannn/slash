@@ -47,7 +47,7 @@ class Editor {
 
 public:
 
-	std::string mapFilename = "media/map.txt";
+	std::string mapFilename = "media/maps/waterfall.txt";
 
 	sf::View mapView, guiView;
 
@@ -82,10 +82,9 @@ public:
 	{
 		loadMap(mapFilename.c_str());
     
-		mapTex.loadFromFile("media/images/map.png");
+		mapTex.loadFromFile("media/maps/waterfall.png");
 		mapSprite.setTexture(mapTex);
 		mapSprite.setOrigin(sf::Vector2f((float)mapTex.getSize().x / 2.0f, (float)mapTex.getSize().y / 2.0f));
-		mapSprite.setScale(8.0f, 8.0f);
 
 		selectedRect.setSize(sf::Vector2f(30, 30));
 		selectedRect.setOrigin(sf::Vector2f((float)selectedRect.getSize().x / 2.0f, (float)selectedRect.getSize().y / 2.0f));
