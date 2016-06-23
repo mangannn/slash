@@ -26,6 +26,9 @@ int main() {
 	window->setFramerateLimit(FRAMERATE_LIMIT);
 
 
+    
+    setMainFont("media/fonts/pixlfont.ttf");
+
 
 	Game *game = new Game();
 

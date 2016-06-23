@@ -25,12 +25,11 @@ public:
 
 	Map() {
 
-		loadMap("media/map.txt");
+		loadMap("media/maps/waterfall.txt");
     
-		mapTex.loadFromFile("media/images/map.png");
+		mapTex.loadFromFile("media/maps/waterfall.png");
 		mapSprite.setTexture(mapTex);
 		mapSprite.setOrigin(sf::Vector2f((float)mapTex.getSize().x / 2.0f, (float)mapTex.getSize().y / 2.0f));
-		mapSprite.setScale(8.0f, 8.0f);
 	}
 
 	void draw(RenderTarget *target) {
@@ -41,7 +40,7 @@ public:
 			images[i].draw(target);
 		}
 		for (unsigned int i = 0; i < numStatic; i++) {
-			staticBoxes[i].draw(target);
+			//staticBoxes[i].draw(target);
 		}
 	}
 

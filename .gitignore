@@ -1,5 +1,6 @@
 
 slash
+editor/BIN
 build/*
 
 *.d
