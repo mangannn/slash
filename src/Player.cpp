@@ -36,6 +36,8 @@ void Player::update(float elapsedTime) {
 	Vector2f v = Vector2f(x, y);
 
 	x = sf::Joystick::getAxisPosition(joystickId, sf::Joystick::U) / 100.0f;
+
+	// on windows axis V should be axis R
 	y = sf::Joystick::getAxisPosition(joystickId, sf::Joystick::V) / 100.0f;
 
 	Vector2f v2 = Vector2f(x, y);
