@@ -25,7 +25,7 @@ public:
 
 	Map() {
 
-		loadMap("media/maps/forest2.txt");
+		loadMap("media/maps/forest.txt");
 
 		/*for (unsigned int i = 1; i < numImages; i++) {
 			std::cout << images[i].pos.y - images[i - 1].pos.y << "\n";

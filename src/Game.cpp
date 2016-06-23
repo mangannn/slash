@@ -151,7 +151,6 @@ void Game::update(float elapsedTime) {
 		for (unsigned int i = 0; i < orbs->size(); i++) {
 			if (CollisionBox::check(players->at(j)->swordBox, orbs->at(i)->box)) {
 				Vector2f diff = players->at(j)->swordBox.getPosition() - orbs->at(i)->pos;
-				std::cout << "dadasd\n";
 				orbs->at(i)->vel = orbs->at(i)->vel - 2 * (dot(orbs->at(i)->vel, diff) / sqrSize(diff)) * diff;
 			} else if (CollisionBox::check(players->at(j)->bodyBox, orbs->at(i)->box)) {
 				//std::cout << "Auuu!\n";

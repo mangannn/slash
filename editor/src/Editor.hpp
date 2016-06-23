@@ -110,7 +110,7 @@ public:
 	}
 
 	~Editor() {
-		saveMap("media/autosave.txt");
+		saveMap("media/maps/autosave.txt");
 	}
 
 
