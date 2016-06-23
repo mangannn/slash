@@ -24,6 +24,8 @@ public:
 		sf::Texture *texture = getTexture(filename);
 		sprite.setTexture(*texture);
 		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
+		int a = 70;
+		sprite.setColor(Color(255 - a * RANDOM, 255 - a * RANDOM, 255 - a * RANDOM));
 	}
 
 	virtual ~Image() {}

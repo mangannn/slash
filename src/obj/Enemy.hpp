@@ -32,7 +32,9 @@ public:
 		sprite.setTexture(*texture);
 		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 
-		sprite.setColor(RANDOM_COLOR);
+		int a = 120;
+		sprite.setColor(Color(255 - a * RANDOM, 255 - a * RANDOM, 255 - a * RANDOM));
+		//sprite.setColor(RANDOM_COLOR);
 
 		box = CollisionBox(&pos, Vector2f(0,-(float)texture->getSize().y / 2.0f), (float)texture->getSize().x / 2.0f);
 	}
