@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <iostream>
+#include <iomanip>
 
 #include <SFML/Graphics.hpp>
 
@@ -68,7 +69,17 @@ public:
 
 	int state = 0;
 
-	Editor() {
+
+	sf::Text infoText, helpText;
+
+
+
+
+	sf::RenderWindow *target;
+
+	Editor(sf::RenderWindow *targetParam): 
+		target(targetParam)
+	{
 		loadMap(mapFilename.c_str());
     
 		mapTex.loadFromFile("media/images/map.png");
@@ -76,11 +87,26 @@ public:
 		mapSprite.setOrigin(sf::Vector2f((float)mapTex.getSize().x / 2.0f, (float)mapTex.getSize().y / 2.0f));
 		mapSprite.setScale(8.0f, 8.0f);
 
-		selectedRect.setSize(sf::Vector2f(40, 40));
+		selectedRect.setSize(sf::Vector2f(30, 30));
 		selectedRect.setOrigin(sf::Vector2f((float)selectedRect.getSize().x / 2.0f, (float)selectedRect.getSize().y / 2.0f));
 		selectedRect.setFillColor(sf::Color(0, 0, 0, 0));
 		selectedRect.setOutlineThickness(5);
 		selectedRect.setOutlineColor(sf::Color(255, 0, 0));
+
+
+        infoText.setFont(*getMainFont());
+        infoText.setCharacterSize(40);
+        infoText.setPosition(20, 0);
+
+        helpText.setFont(*getMainFont());
+        helpText.setCharacterSize(40);
+        helpText.setPosition(300, 0);
+
+        helpText.setString(sf::String(
+        	"h:\tthis help text\ns:\tsave\n1:\tstate 1\n2:\tstate 2\nz:\tdelete selected object\n\nMouse:\n\n") + sf::String(
+        	"right:     move screen\nleft:      select object\nleft+ctrl:  move selected object\n") + sf::String(
+        	"left+shift: copy selected object\nwheel:     zoom\nwheel+alt:   change size"
+        	));
 	}
 
 	~Editor() {
@@ -88,12 +114,12 @@ public:
 	}
 
 
-	void eventHandle(sf::Event event, sf::RenderWindow *target) {
+	void eventHandle(sf::Event event) {
 		switch (event.type) {
 			case sf::Event::MouseMoved: {
 				if (mouseMove) {
 
-					Vector2f coord = target->mapPixelToCoords(Vector2i(event.mouseMove.x, event.mouseMove.y));
+					Vector2f coord = target->mapPixelToCoords(Vector2i(event.mouseMove.x, event.mouseMove.y), mapView);
 
 					mapView.move(mouseMoveVec - coord);
 				}
@@ -102,7 +128,7 @@ public:
 				switch (event.mouseButton.button) {
 					case sf::Mouse::Left: {
 
-						Vector2f coord = target->mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y));
+						Vector2f coord = target->mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y), mapView);
 
 						if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
 							if (state == 0) {
@@ -115,7 +141,7 @@ public:
 								staticBoxes.push_back(CollisionBox(origo, coord, staticBoxes.at(selected).r));
 								selected = staticBoxes.size() - 1;
 							} else {
-								images.push_back(ImageM(coord, "media/images/gran.png"));
+								images.push_back(ImageM(coord, images.at(selected).filename));
 								selected = images.size() - 1;
 							}
 						} else {
@@ -123,7 +149,7 @@ public:
 						}
 					} break;
 					case sf::Mouse::Right: {
-						mouseMoveVec = target->mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y));
+						mouseMoveVec = target->mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y), mapView);
 						mouseMove = true;
 
 					} break;
@@ -152,16 +178,16 @@ public:
 			case sf::Event::KeyPressed: {
 
 				switch (event.key.code) {
-					case sf::Keyboard::Return: {
+					case sf::Keyboard::Z: {
 						if (state == 0) {
 							if (staticBoxes.size() > 1) {
 								staticBoxes.erase(staticBoxes.begin() + selected);
-								selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target)));
+								selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target), mapView));
 							}
 						} else {
 							if (images.size() > 1) {
 								images.erase(images.begin() + selected);
-								selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target)));
+								selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target), mapView));
 							}
 						}
 					} break;
@@ -170,11 +196,11 @@ public:
 					} break;
 					case sf::Keyboard::Num1: {
 						state = 0;
-						selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target)));
+						selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target), mapView));
 					} break;
 					case sf::Keyboard::Num2: {
 						state = 1;
-						selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target)));
+						selectClosest(target->mapPixelToCoords(sf::Mouse::getPosition(*target), mapView));
 					} break;
 					default: break;
 				}
@@ -183,7 +209,7 @@ public:
 		}
 	}
 
-	void draw(sf::RenderTarget *target) {
+	void draw() {
 
 		target->clear();
 
@@ -191,7 +217,8 @@ public:
 		float aspect = ((float)targetSize.x / (float)targetSize.y);
 
 		mapView.setSize(mapView.getSize().y * aspect, mapView.getSize().y);
-		guiView.setSize(guiView.getSize().y * aspect, guiView.getSize().y);
+		guiView.setSize(target->getSize().y * aspect, target->getSize().y);
+		guiView.setCenter(guiView.getSize() * 0.5f);
 
 		target->setView(mapView);
 
@@ -204,22 +231,30 @@ public:
 			staticBoxes.at(i).draw(target);
 		}
 
-		Vector2i pixel;
-		if (state == 0) {
-			pixel = target->mapCoordsToPixel(staticBoxes.at(selected).pos);
-		} else {
-			pixel = target->mapCoordsToPixel(images.at(selected).pos);
-		}
+
 
 		target->setView(guiView);
 
-		selectedRect.setPosition(target->mapPixelToCoords(pixel));
+
+
+		Vector2i pixel;
+		if (state == 0) {
+			pixel = target->mapCoordsToPixel(staticBoxes.at(selected).pos, mapView);
+		} else {
+			pixel = target->mapCoordsToPixel(images.at(selected).pos, mapView);
+		}
+
+		selectedRect.setPosition(target->mapPixelToCoords(pixel, guiView));
 
 		target->draw(selectedRect);
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
+			target->draw(helpText);
+		}
 
 
-		target->setView(mapView);
+		updateText();
+		target->draw(infoText);
 	}
 
 
@@ -262,9 +297,34 @@ public:
 
 
 
+	void updateText() {
+
+		Vector2f mousePos = target->mapPixelToCoords(sf::Mouse::getPosition(*target), mapView);
+
+		std::stringstream ss;
+
+		//ss.precision(0);
+
+		if (state == 0) {
+			ss << "radie: " << staticBoxes.at(selected).r;
+		} else {
+			ss << "image: " << images.at(selected).filename;
+		}
+
+		ss << "\n";
+
+		ss << 
+		"\nstate: " << state << "\nselected: " << selected << 
+		"\nx: " << (int)mousePos.x << "\ny: " << (int)mousePos.y << 
+		"\n\n";
+
+
+        infoText.setString(ss.str());
 
 
 
+
+	}
 
 
 

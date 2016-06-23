@@ -24,8 +24,11 @@ int main() {
 	window->setVerticalSyncEnabled(false);
 	window->setFramerateLimit(FRAMERATE_LIMIT);
 
+	
+    setMainFont("media/fonts/pixlfont.ttf");
 
-	Editor *editor = new Editor();
+
+	Editor *editor = new Editor(window);
 
 
 	sf::Event event;
@@ -34,7 +37,7 @@ int main() {
 
 		while (window->pollEvent(event)) {
 
-			editor->eventHandle(event, window);
+			editor->eventHandle(event);
 
 			switch (event.type) {
 				case sf::Event::Closed: {
@@ -71,7 +74,7 @@ int main() {
 			}
 		}
 
-		editor->draw(window);
+		editor->draw();
 
 		//Update window
 		window->display();
