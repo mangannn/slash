@@ -42,9 +42,6 @@ Game::Game() {
     objects->push_back(new RotAni(Vector2f(0,-10)));
     objects->push_back(new TitelEffekt(Vector2f(120,100)));
 
-
-    objects->push_back(new Enemy(Vector2f(100,-100)));
-
 	gameView.setSize(Vector2f(1000, 1000));
 	gameView.setCenter(Vector2f(0,0));;
 }
@@ -125,6 +122,7 @@ void Game::update(float elapsedTime) {
 	if (orbTimer > 2) {
 		orbTimer -= 2;
 		orbs->push_back(new Orb(Vector2f(0,0), 40.0f * Vector2f(RANDOM2, RANDOM2)));
+    	objects->push_back(new Enemy(Vector2f(300, 300)));
 	}
 
 
@@ -149,6 +147,7 @@ void Game::update(float elapsedTime) {
 	}
 
 	for (unsigned int j = 0; j < players->size(); j++) {
+
 		for (unsigned int i = 0; i < orbs->size(); i++) {
 			if (CollisionBox::check(players->at(j)->swordBox, orbs->at(i)->box)) {
 				Vector2f diff = players->at(j)->swordBox.getPosition() - orbs->at(i)->pos;
@@ -158,9 +157,34 @@ void Game::update(float elapsedTime) {
 				std::cout << "Auuu!\n";
 			}
 		}
+
+		Enemy *e;
+
+		for (unsigned int i = 0; i < objects->size(); i++) {
+			if ((e = dynamic_cast<Enemy *>(objects->at(i))) != NULL) {
+				if (CollisionBox::check(players->at(j)->swordBox, e->box)) {
+					objects->erase(objects->begin() + i);
+					delete e;
+					i -= 1;
+				}
+			}
+		}
 	}
 }
 
+
+
+int insertByDepth(std::vector<Object *> *list, Object *o) {
+	for (unsigned int i = 0; i < list->size(); i++) {
+		if (o->pos.y < list->at(i)->pos.y) {
+			list->insert(list->begin() + i, o);
+			return i;
+		}
+	}
+
+	list->push_back(o);
+	return list->size() - 1;
+}
 
 
 
@@ -217,19 +241,38 @@ void Game::draw(RenderTarget *target) {
 
 	}
 
-	map->draw(&gamePixelArea);
+	map->drawBackground(&gamePixelArea);
+
+
+	std::vector<Object *> sorted; // sorted by depth
 
 
 	for (unsigned int i = 0; i < orbs->size(); i++) {
-		orbs->at(i)->draw(&gamePixelArea, &monitorPixelArea);
+		insertByDepth(&sorted, orbs->at(i));
 	}
 	for (unsigned int i = 0; i < players->size(); i++) {
-		players->at(i)->draw(&gamePixelArea, &monitorPixelArea);
+		insertByDepth(&sorted, players->at(i));
 	}
 	for (unsigned int i = 0; i < objects->size(); i++) {
-		objects->at(i)->draw(&gamePixelArea, &monitorPixelArea);
+		insertByDepth(&sorted, objects->at(i));
 	}
-    
+
+
+	unsigned int movable_index = 0;
+
+	for (unsigned int i = 0; i < map->numImages; i++) {
+		while (movable_index < sorted.size() && sorted.at(movable_index)->pos.y < map->images[i].pos.y) {
+			sorted.at(movable_index)->draw(&gamePixelArea, &monitorPixelArea);
+			movable_index += 1;
+		}
+		map->images[i].draw(&gamePixelArea);
+	}
+
+    for (unsigned int i = movable_index; i < sorted.size(); i++) {
+		sorted.at(i)->draw(&gamePixelArea, &monitorPixelArea);
+	}
+
+
     gamePixelArea.display();
     monitorPixelArea.display();
     
@@ -248,3 +291,4 @@ void Game::draw(RenderTarget *target) {
         target->draw(sprite);
     }
 }
+

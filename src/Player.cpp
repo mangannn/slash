@@ -65,9 +65,9 @@ void Player::draw(RenderTarget *target, RenderTarget *monitor) {
 	sprite.setPosition(pos);
 	target->draw(sprite);
 
-	walkBox.draw(target);
-	bodyBox.draw(target);
-	swordBox.draw(target);
+	//walkBox.draw(target);
+	//bodyBox.draw(target);
+	//swordBox.draw(target);
 
 
 	Vector2f swordOri = pos + Vector2f(0, -(float)texture->getSize().y / 2.0);

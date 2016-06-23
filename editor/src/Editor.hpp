@@ -31,7 +31,8 @@ public:
 
 		sf::Texture *texture = getTexture(filename);
 		sprite.setTexture(*texture);
-		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y / 2.0f));
+		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
+		//pos.y += (float)texture->getSize().y / 2.0f;
 	}
 
 	virtual ~ImageM() {}
@@ -47,7 +48,7 @@ class Editor {
 
 public:
 
-	std::string mapFilename = "media/maps/forest.txt";
+	std::string mapFilename = "media/maps/waterfall.txt";
 
 	sf::View mapView, guiView;
 
@@ -82,7 +83,7 @@ public:
 	{
 		loadMap(mapFilename.c_str());
     
-		mapTex.loadFromFile("media/maps/forest.png");
+		mapTex.loadFromFile("media/maps/waterfall.png");
 		mapSprite.setTexture(mapTex);
 		mapSprite.setOrigin(sf::Vector2f((float)mapTex.getSize().x / 2.0f, (float)mapTex.getSize().y / 2.0f));
 
@@ -140,8 +141,7 @@ public:
 								staticBoxes.push_back(CollisionBox(origo, coord, staticBoxes.at(selected).r));
 								selected = staticBoxes.size() - 1;
 							} else {
-								images.push_back(ImageM(coord, images.at(selected).filename));
-								selected = images.size() - 1;
+								selected = addImage(ImageM(coord, images.at(selected).filename));
 							}
 						} else {
 							selectClosest(coord);
@@ -192,6 +192,7 @@ public:
 					} break;
 					case sf::Keyboard::S: {
 						saveMap(mapFilename.c_str());
+						std::cout << "Saved!\n";
 					} break;
 					case sf::Keyboard::Num1: {
 						state = 0;
@@ -327,6 +328,18 @@ public:
 
 
 
+	int addImage(ImageM img) {
+		for (unsigned int i = 0; i < images.size(); i++) {
+			if (img.pos.y < images.at(i).pos.y) {
+				images.insert(images.begin() + i, img);
+				return i;
+			}
+		}
+
+		images.push_back(img);
+		return images.size() - 1;
+	}
+
 
 
 
@@ -382,7 +395,7 @@ public:
 				}
 
 
-				images.push_back(ImageM(Vector2f(x, y), str1));
+				addImage(ImageM(Vector2f(x, y), str1));
 			}
 		}
 		fclose(file);

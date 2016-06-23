@@ -23,7 +23,7 @@ public:
 
 		sf::Texture *texture = getTexture(filename);
 		sprite.setTexture(*texture);
-		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y / 2.0f));
+		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 	}
 
 	virtual ~Image() {}

@@ -30,11 +30,11 @@ public:
 
 		sf::Texture *texture = getTexture("media/images/enemy.png");
 		sprite.setTexture(*texture);
-		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y / 2.0f));
+		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 
 		sprite.setColor(RANDOM_COLOR);
 
-		box = CollisionBox(&pos, Vector2f(0,0), (float)texture->getSize().x / 2.0f);
+		box = CollisionBox(&pos, Vector2f(0,-(float)texture->getSize().y / 2.0f), (float)texture->getSize().x / 2.0f);
 	}
 
 	virtual ~Enemy() {}
@@ -73,7 +73,7 @@ public:
 		sprite.setPosition(pos);
 		target->draw(sprite);
 
-		box.draw(target);
+		//box.draw(target);
 	}
 };
 

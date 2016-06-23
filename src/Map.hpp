@@ -25,20 +25,24 @@ public:
 
 	Map() {
 
-		loadMap("media/maps/forest.txt");
+		loadMap("media/maps/forest2.txt");
+
+		/*for (unsigned int i = 1; i < numImages; i++) {
+			std::cout << images[i].pos.y - images[i - 1].pos.y << "\n";
+		}*/
     
 		mapTex.loadFromFile("media/maps/forest.png");
 		mapSprite.setTexture(mapTex);
 		mapSprite.setOrigin(sf::Vector2f((float)mapTex.getSize().x / 2.0f, (float)mapTex.getSize().y / 2.0f));
 	}
 
+
+	void drawBackground(RenderTarget *target) {
+		target->draw(mapSprite);
+	}
+
 	void draw(RenderTarget *target) {
 
-		target->draw(mapSprite);
-
-		for (unsigned int i = 0; i < numImages; i++) {
-			images[i].draw(target);
-		}
 		for (unsigned int i = 0; i < numStatic; i++) {
 			//staticBoxes[i].draw(target);
 		}
