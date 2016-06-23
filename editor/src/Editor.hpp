@@ -171,7 +171,11 @@ public:
 
 					}
 				} else {
+                    
+                    sf::Vector2f mousePosBefore = target->mapPixelToCoords(sf::Mouse::getPosition(*target), mapView);
 					mapView.zoom(1.f + (0.1f * event.mouseWheel.delta));
+                    mapView.move(mousePosBefore - target->mapPixelToCoords(sf::Mouse::getPosition(*target), mapView));
+                    
 				}
 			} break;			
 			case sf::Event::KeyPressed: {

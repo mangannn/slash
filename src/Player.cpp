@@ -5,6 +5,8 @@
 #include "Functions.hpp"
 
 #include <iostream>
+#include <GL/gl.h>
+
 
 using namespace std;
 
@@ -23,40 +25,43 @@ Player::Player(Vector2f position, int joystickIdParam):
 {
 	texture = getTexture("media/images/char.png");
 	sprite.setTexture(*texture);
-	sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
+	sprite.setOrigin(Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 
 	sprite.setColor(RANDOM_COLOR);
 }
 
 void Player::update(float elapsedTime) {
+    
+    Vector2f jStickMovementPos = Vector2f(
+        Joystick::getAxisPosition(joystickId, Joystick::X) / 100.0f,
+        Joystick::getAxisPosition(joystickId, Joystick::Y) / 100.0f
+    );
+    
+    Vector2f jStickSwordPos = Vector2f(
+    	Joystick::getAxisPosition(joystickId, Joystick::U) / 100.0f,
+    	Joystick::getAxisPosition(joystickId, Joystick::V) / 100.0f
+    );
+	
+    float jStickSwordAmount = size(jStickSwordPos);
 
-	float x = sf::Joystick::getAxisPosition(joystickId, sf::Joystick::X) / 100.0f;
-	float y = sf::Joystick::getAxisPosition(joystickId, sf::Joystick::Y) / 100.0f;
-
-	Vector2f v = Vector2f(x, y);
-
-	x = sf::Joystick::getAxisPosition(joystickId, sf::Joystick::U) / 100.0f;
-
-	// on windows axis V should be axis R
-	y = sf::Joystick::getAxisPosition(joystickId, sf::Joystick::V) / 100.0f;
-
-	Vector2f v2 = Vector2f(x, y);
-
-	float sv2 = size(v2);
-	swordLen = 40;
-
-	if (sv2 > JOYSTICK_THRESHOLD) {
-		swordLen *= sv2;
-		swordDir = v2 / sv2;
+	if (jStickSwordAmount > JOYSTICK_THRESHOLD) {
+		swordLen = jStickSwordAmount * 40;
+		swordDir = jStickSwordPos / jStickSwordAmount;
 	}
+    else {
+        swordLen = 0;
+    }
+    
 
 
 	Vector2f swordOri = Vector2f(0, -(float)texture->getSize().y / 2.0);
 	swordBox.pos = swordOri + swordDir * swordLen;
 
-	if (size(v) > JOYSTICK_THRESHOLD) {
-		pos += (v * MOVEMENT_SPEED) * elapsedTime;
+	if (size(jStickMovementPos) > JOYSTICK_THRESHOLD) {
+		pos += (jStickMovementPos * MOVEMENT_SPEED) * elapsedTime;
 	}
+    
+    updateSwordGraphics(elapsedTime);
 
 }
 
@@ -70,13 +75,33 @@ void Player::draw(RenderTarget *target, RenderTarget *monitor) {
 	//swordBox.draw(target);
 
 
-	Vector2f swordOri = pos + Vector2f(0, -(float)texture->getSize().y / 2.0);
+	//Vector2f swordOri = pos + Vector2f(0, -(float)texture->getSize().y / 2.0);
 
-	sf::Vertex line[] =
+    
+    
+	Vertex line[] =
 	{
-	    swordOri,
-	    swordOri + swordDir * swordLen
+        Vertex(swordVertices[1].position, Color::White),
+        Vertex(swordDir * swordLen, Color::White)
 	};
+    
 
-	target->draw(line, 2, sf::Lines);
+    Transform t;
+    t.translate(pos + Vector2f(0, -(float)texture->getSize().y / 2.0));
+    
+	target->draw(line, 2, Lines, t);
+    target->draw(swordVertices, SWORD_VERTEX_COUNT, TrianglesFan, t);
+    
+    
+}
+
+
+void Player::updateSwordGraphics(float elapsedTime) {
+    
+    approach(&swordVertices[1].position, swordDir * swordLen, 0.8);
+    // Follow sword edge
+    for (int i = 2; i < SWORD_VERTEX_COUNT; i++) {
+        approach(&swordVertices[i].position, swordVertices[i - 1].position, 0.2);
+    }
+    
 }

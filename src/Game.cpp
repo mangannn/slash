@@ -154,7 +154,7 @@ void Game::update(float elapsedTime) {
 				std::cout << "dadasd\n";
 				orbs->at(i)->vel = orbs->at(i)->vel - 2 * (dot(orbs->at(i)->vel, diff) / sqrSize(diff)) * diff;
 			} else if (CollisionBox::check(players->at(j)->bodyBox, orbs->at(i)->box)) {
-				std::cout << "Auuu!\n";
+				//std::cout << "Auuu!\n";
 			}
 		}
 
