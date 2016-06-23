@@ -24,8 +24,6 @@ Game::Game() {
     
     //gamePixelArea.setSmooth(false);
     
-    setMainFont("media/fonts/pixlfont.ttf");
-    
 
 
 	players = new std::vector<Player *>();
