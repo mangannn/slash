@@ -41,15 +41,17 @@ void Player::update(float elapsedTime) {
     	Joystick::getAxisPosition(joystickId, Joystick::U) / 100.0f,
     	Joystick::getAxisPosition(joystickId, Joystick::V) / 100.0f
     );
-
-	swordLen = 40;
 	
     float jStickSwordAmount = size(jStickSwordPos);
 
 	if (jStickSwordAmount > JOYSTICK_THRESHOLD) {
-		swordLen *= jStickSwordAmount;
+		swordLen = jStickSwordAmount * 40;
 		swordDir = jStickSwordPos / jStickSwordAmount;
 	}
+    else {
+        swordLen = 0;
+    }
+    
 
 
 	Vector2f swordOri = Vector2f(0, -(float)texture->getSize().y / 2.0);
@@ -58,6 +60,8 @@ void Player::update(float elapsedTime) {
 	if (size(jStickMovementPos) > JOYSTICK_THRESHOLD) {
 		pos += (jStickMovementPos * MOVEMENT_SPEED) * elapsedTime;
 	}
+    
+    updateSwordGraphics(elapsedTime);
 
 }
 
@@ -81,9 +85,6 @@ void Player::draw(RenderTarget *target, RenderTarget *monitor) {
         Vertex(swordDir * swordLen, Color::White)
 	};
     
-    swordVertices[2].position = swordVertices[1].position;
-    swordVertices[1].position = swordDir * swordLen;
-    
 
     Transform t;
     t.translate(pos + Vector2f(0, -(float)texture->getSize().y / 2.0));
@@ -91,13 +92,16 @@ void Player::draw(RenderTarget *target, RenderTarget *monitor) {
 	target->draw(line, 2, Lines, t);
     target->draw(swordVertices, SWORD_VERTEX_COUNT, TrianglesFan, t);
     
+    
 }
 
 
-
-Color tintColor(Color c, int amount) {
-    c.r += 10 * amount;
-    c.g += 5 *amount;
-    c.b += -30 * amount;
-    return c;
+void Player::updateSwordGraphics(float elapsedTime) {
+    
+    approach(&swordVertices[1].position, swordDir * swordLen, 0.8);
+    // Follow sword edge
+    for (int i = 2; i < SWORD_VERTEX_COUNT; i++) {
+        approach(&swordVertices[i].position, swordVertices[i - 1].position, 0.2);
+    }
+    
 }

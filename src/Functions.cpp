@@ -1,6 +1,9 @@
+#include "Functions.hpp"
+
 #include <math.h>
 
 #include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 
 using namespace sf;
@@ -37,6 +40,15 @@ float periodValueBetween(float angle, float target, float percent, float period)
 	angle = cutToPeriod(angle, - period / 2, period / 2);
 	float diffrence = cutToPeriod(target - angle, - period / 2, period / 2);
 	return cutToPeriod(diffrence * percent + angle, 0, period);
+}
+
+Vector2f approach(Vector2f current, Vector2f target, float percent) {
+    approach(&current, target, percent);
+    return current;
+}
+
+void approach(Vector2f *current, Vector2f target, float percent) {
+    *current = (target - *current) * percent + *current;
 }
 
 bool lineIntersect(Vector2f a1, Vector2f a2, Vector2f b1, Vector2f b2) {
@@ -135,4 +147,12 @@ void lineIntersectDebug() {
 		
 	}
 
+}
+
+
+Color tintColor(Color c, int amount) {
+    c.r += 10 * amount;
+    c.g += 5 *amount;
+    c.b += -30 * amount;
+    return c;
 }
