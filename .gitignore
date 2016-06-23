@@ -1,5 +1,6 @@
 
 slash
+*BIN
 build/*
 
 *.d
