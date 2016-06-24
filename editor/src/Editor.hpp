@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 
 #include <SFML/Graphics.hpp>
@@ -78,7 +79,7 @@ public:
 
 
 	std::string type;
-	
+
 	float r;
 
 	Spawn() {}
@@ -106,7 +107,7 @@ class Editor {
 
 public:
 
-	std::string mapFilename = "media/maps/waterfall.txt";
+	std::string mapFilename;
 
 	sf::View mapView, guiView;
 
@@ -145,6 +146,20 @@ public:
 		target(targetParam)
 	{
 
+
+		std::ifstream file ("media/editor-settings.txt");
+		if (file.is_open()) {
+			if (!getline(file, mapFilename)) {
+				std::cout << "Unable to read settings file!\n";
+				mapFilename = "media/maps/map.txt";
+			}
+			file.close();
+		} else {
+			std::cout << "Unable to read settings file!\n";
+			mapFilename = "media/maps/map.txt";
+		}
+
+		std::cout << "Loading map: " << mapFilename << "\n";
 		loadMap(mapFilename.c_str());
 
 		selectedRect.setSize(sf::Vector2f(30, 30));
@@ -181,7 +196,9 @@ public:
 	}
 
 	~Editor() {
-		saveMap("media/maps/autosave.txt");
+		std::string filename = "media/maps/autosave.txt";
+		saveMap(filename.c_str());
+		std::cout << "Autosaved file: " << filename << "\n";
 	}
 
 
@@ -304,7 +321,7 @@ public:
 						} break;
 						case sf::Keyboard::S: {
 							saveMap(mapFilename.c_str());
-							std::cout << "Saved!\n";
+							std::cout << "Saved file: " << mapFilename << "\n";
 						} break;
 						case sf::Keyboard::Tab: {
 
@@ -532,6 +549,7 @@ public:
 		ss << "\n";
 
 		ss << 
+		"\nfile: " << mapFilename <<
 		"\nstate: " << state << "\nselected: " << selected << 
 		"\nx: " << (int)mousePos.x << "\ny: " << (int)mousePos.y << 
 		"\n\n";
