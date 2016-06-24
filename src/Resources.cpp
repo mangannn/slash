@@ -9,7 +9,9 @@ sf::Texture *getTexture(const std::string filename) {
 	if (texture_list.find(filename) == texture_list.end()) {
 		sf::Texture *texture = new sf::Texture();
 		if (!texture->loadFromFile(filename)) {
-			std::cout << "Missing texture: " << filename << std::endl;
+			//std::cout << "Missing texture: " << filename << std::endl;
+			// loadFromFile already prints if it dont find the texture
+			texture->loadFromFile("media/images/no-texture.png");
 		}
 		texture_list[filename] = texture;
 		return texture;

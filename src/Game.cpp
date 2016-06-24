@@ -11,6 +11,7 @@
 
 
 #include "obj/Enemy.hpp"
+#include "obj/Explotion.hpp"
 
 
 #include "Collision.hpp"
@@ -162,9 +163,13 @@ void Game::update(float elapsedTime) {
 		for (unsigned int i = 0; i < objects->size(); i++) {
 			if ((e = dynamic_cast<Enemy *>(objects->at(i))) != NULL) {
 				if (CollisionBox::check(players->at(j)->swordBox, e->box)) {
+
+    				objects->push_back(new Explotion(e->pos + Vector2f(0, 20)));
+
 					objects->erase(objects->begin() + i);
 					delete e;
 					i -= 1;
+
 				}
 			}
 		}
@@ -270,6 +275,10 @@ void Game::draw(RenderTarget *target) {
     for (unsigned int i = movable_index; i < sorted.size(); i++) {
 		sorted.at(i)->draw(&gamePixelArea, &monitorPixelArea);
 	}
+
+
+	// only for debug
+	map->drawDebug(&gamePixelArea);
 
 
     gamePixelArea.display();
