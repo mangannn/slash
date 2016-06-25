@@ -414,6 +414,7 @@ public:
 		guiView.setCenter(guiView.getSize() * 0.5f);
 
 		target->setView(mapView);
+		
 
 		for (unsigned int i = 0; i < bgs.size(); i++) {
 			bgs.at(i).draw(target);
@@ -430,6 +431,7 @@ public:
 				images.at(i).draw(target);
 			}
 		}
+
 
 		for (unsigned int i = 0; i < staticBoxes.size(); i++) {
 			staticBoxes.at(i).draw(target);
