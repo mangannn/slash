@@ -18,11 +18,6 @@ public:
 
 	virtual void draw(sf::RenderTarget *target);
 
-
-	/*static void add(Object *o) {
-		objects->push_back(o);
-	}*/
-
 private:
 
 	sf::View gameView;

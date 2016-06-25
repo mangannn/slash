@@ -1,1 +1,1 @@
-media/maps/waterfall.txt
+media/maps/forest.txt

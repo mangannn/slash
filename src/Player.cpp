@@ -33,37 +33,37 @@ Player::Player(Vector2f position, int joystickIdParam):
 }
 
 void Player::update(float elapsedTime) {
-    
-    Vector2f jStickMovementPos = Vector2f(
-        Joystick::getAxisPosition(joystickId, Joystick::X) / 100.0f,
-        Joystick::getAxisPosition(joystickId, Joystick::Y) / 100.0f
-    );
-    
-    Vector2f jStickSwordPos = Vector2f(
-    	Joystick::getAxisPosition(joystickId, Joystick::U) / 100.0f,
-    	Joystick::getAxisPosition(joystickId, Joystick::V) / 100.0f
-    );
 	
-    float jStickSwordAmount = size(jStickSwordPos);
+	Vector2f jStickMovementPos = Vector2f(
+		Joystick::getAxisPosition(joystickId, Joystick::X) / 100.0f,
+		Joystick::getAxisPosition(joystickId, Joystick::Y) / 100.0f
+	);
+	
+	Vector2f jStickSwordPos = Vector2f(
+		Joystick::getAxisPosition(joystickId, Joystick::U) / 100.0f,
+		Joystick::getAxisPosition(joystickId, Joystick::V) / 100.0f
+	);
+	
+	float jStickSwordAmount = size(jStickSwordPos);
 
 	if (jStickSwordAmount > JOYSTICK_THRESHOLD) {
 		swordLen = jStickSwordAmount * 40;
 		swordDir = jStickSwordPos / jStickSwordAmount;
 	}
-    else {
-        swordLen = 0;
-    }
-    
+	else {
+		swordLen = 0;
+	}
+	
 
 
 	Vector2f swordOri = Vector2f(0, -(float)texture->getSize().y / 2.0);
 	swordBox.pos = swordOri + swordDir * swordLen;
 
 
-    float jStickMovementAmount = size(jStickMovementPos);
+	float jStickMovementAmount = size(jStickMovementPos);
 
 
-    float mov = 0;
+	float mov = 0;
 
 	if (jStickMovementAmount > JOYSTICK_THRESHOLD) {
 		pos += (jStickMovementPos * MOVEMENT_SPEED) * elapsedTime;
@@ -78,8 +78,8 @@ void Player::update(float elapsedTime) {
 			ani.setFrame(0);
 		}
 	} 
-    
-    updateSwordGraphics(elapsedTime);
+	
+	updateSwordGraphics(elapsedTime);
 
 }
 
@@ -98,31 +98,31 @@ void Player::draw(RenderTarget *target, RenderTarget *monitor) {
 
 	//Vector2f swordOri = pos + Vector2f(0, -(float)texture->getSize().y / 2.0);
 
-    
-    
+	
+	
 	Vertex line[] =
 	{
-        Vertex(swordVertices[1].position, Color::White),
-        Vertex(swordDir * swordLen, Color::White)
+		Vertex(swordVertices[1].position, Color::White),
+		Vertex(swordDir * swordLen, Color::White)
 	};
-    
+	
 
-    Transform t;
-    t.translate(pos + Vector2f(0, -(float)texture->getSize().y / 2.0));
-    
+	Transform t;
+	t.translate(pos + Vector2f(0, -(float)texture->getSize().y / 2.0));
+	
 	target->draw(line, 2, Lines, t);
-    target->draw(swordVertices, SWORD_VERTEX_COUNT, TrianglesFan, t);
-    
-    
+	target->draw(swordVertices, SWORD_VERTEX_COUNT, TrianglesFan, t);
+	
+	
 }
 
 
 void Player::updateSwordGraphics(float elapsedTime) {
-    
-    approach(&swordVertices[1].position, swordDir * swordLen, 0.8);
-    // Follow sword edge
-    for (int i = 2; i < SWORD_VERTEX_COUNT; i++) {
-        approach(&swordVertices[i].position, swordVertices[i - 1].position, 0.2);
-    }
-    
+	
+	approach(&swordVertices[1].position, swordDir * swordLen, 0.8);
+	// Follow sword edge
+	for (int i = 2; i < SWORD_VERTEX_COUNT; i++) {
+		approach(&swordVertices[i].position, swordVertices[i - 1].position, 0.2);
+	}
+	
 }
