@@ -1,47 +1,16 @@
-#ifndef _ORB_H_
-#define _ORB_H_
+#ifndef _Orb_H_
+#define _Orb_H_
 
-#include "../Object.hpp"
-#include "../Functions.hpp"
-#include "../Resources.hpp"
+#include "Projectile.hpp"
 
 
-class Orb: public Object {
+class Orb: public Projectile {
 
 public:
 
-	sf::Sprite sprite;
-
-	Vector2f vel;
-
-	CollisionBox box;
-
 	Orb(Vector2f position, Vector2f velocity):
-		Object(position),
-		vel(velocity)
+		Projectile(position, velocity, "media/images/orb.png")
 	{
-
-		sf::Texture *texture = Resources::getTexture("media/images/orb.png");
-		sprite.setTexture(*texture);
-		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
-
-		sprite.setColor(RANDOM_COLOR);
-
-		box = CollisionBox(&pos, Vector2f(0,-(float)texture->getSize().y / 2.0f), (float)texture->getSize().x / 2.0f);
-	}
-
-	virtual ~Orb() {}
-
-	virtual void update(float elapsedTime) {
-		pos += vel * elapsedTime;
-	}
-
-	virtual void draw(RenderTarget *target, RenderTarget *monitor) {
-
-		sprite.setPosition(pos);
-		target->draw(sprite);
-
-		//box.draw(target);
 	}
 };
 

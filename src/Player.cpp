@@ -18,16 +18,18 @@ using namespace std;
 
 Player::Player(Vector2f position, int joystickIdParam):
 	Object(position),
+	ani(&pos, "media/ani/legsL", 8),
+	legsTimer(0),
 	joystickId(joystickIdParam),
 	walkBox(&pos, Vector2f(0, -14), 14),
 	bodyBox(&pos, Vector2f(0, -25), 20),
 	swordBox(&pos, Vector2f(0, 10), 4)
 {
-	texture = Resources::getTexture("media/images/char.png");
+	texture = Resources::getTexture("media/images/soul.png");
 	sprite.setTexture(*texture);
 	sprite.setOrigin(Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 
-	sprite.setColor(RANDOM_COLOR);
+	//sprite.setColor(RANDOM_COLOR);
 }
 
 void Player::update(float elapsedTime) {
@@ -57,9 +59,25 @@ void Player::update(float elapsedTime) {
 	Vector2f swordOri = Vector2f(0, -(float)texture->getSize().y / 2.0);
 	swordBox.pos = swordOri + swordDir * swordLen;
 
-	if (size(jStickMovementPos) > JOYSTICK_THRESHOLD) {
+
+    float jStickMovementAmount = size(jStickMovementPos);
+
+
+    float mov = 0;
+
+	if (jStickMovementAmount > JOYSTICK_THRESHOLD) {
 		pos += (jStickMovementPos * MOVEMENT_SPEED) * elapsedTime;
+		mov = jStickMovementAmount * MOVEMENT_SPEED;
 	}
+
+	legsTimer += 0.05 * mov * elapsedTime;
+	if (legsTimer > 1.0f) {
+		legsTimer -= 1.0f;
+
+		if (!ani.setFrame(ani.getFrame() + 1)) {
+			ani.setFrame(0);
+		}
+	} 
     
     updateSwordGraphics(elapsedTime);
 
@@ -67,8 +85,11 @@ void Player::update(float elapsedTime) {
 
 void Player::draw(RenderTarget *target, RenderTarget *monitor) {
 
+	ani.draw(target);
+
 	sprite.setPosition(pos);
 	target->draw(sprite);
+
 
 	//walkBox.draw(target);
 	//bodyBox.draw(target);

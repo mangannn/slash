@@ -5,6 +5,8 @@
 #include "Collision.hpp"
 #include "Functions.hpp"
 
+#include "obj/Animation.hpp"
+
 using namespace sf;
 
 class Player: public Object {
@@ -13,6 +15,10 @@ public:
 
 	Texture *texture;
 	Sprite sprite;
+    Animation ani;
+    float legsTimer;
+
+
 	int joystickId;
 
 

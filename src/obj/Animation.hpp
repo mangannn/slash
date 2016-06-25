@@ -27,8 +27,11 @@ public:
 
 		ani = new sf::Texture*[num]();
 
+		char str[20];
+
 		for (int i = 0; i < num; i++) {
-			ani[i] = Resources::getTexture(filename + "000" + std::to_string(i) + ".png");
+			sprintf(str, "%04d", i);
+			ani[i] = Resources::getTexture(filename + str + ".png");
 		}
 		sprite.setTexture(*ani[current]);
 		sprite.setOrigin(sf::Vector2f((float)ani[current]->getSize().x / 2.0f, (float)ani[current]->getSize().y));

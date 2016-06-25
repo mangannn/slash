@@ -8,6 +8,7 @@
 
 
 #include "../World.hpp"
+#include "Projectile.hpp"
 #include "Explotion.hpp"
 
 #include <math.h>
@@ -60,6 +61,10 @@ public:
 				wobble = 20 * sin(timer * 10);
 
 				if (timer > 3) {
+
+					World::add(new Projectile(pos, vel * 2.f, "media/images/bullet.png"));
+
+
 					timer -= 3;
 					vel = Vector2f(0,0);
 					wobble = 0;

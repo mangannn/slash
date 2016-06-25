@@ -133,7 +133,7 @@ void Game::update(float elapsedTime) {
 
 
 	for (unsigned int i = 0; i < World::objects->size(); i++) {
-		if (dynamic_cast<Orb *>(World::objects->at(i)) != NULL) {
+		if (dynamic_cast<Projectile *>(World::objects->at(i)) != NULL) {
 			if (sqrSize(World::objects->at(i)->pos - gameView.getCenter()) > 400 * 400) {
 				World::remove(World::objects->at(i));
 			}
