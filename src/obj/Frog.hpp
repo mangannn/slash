@@ -30,7 +30,7 @@ public:
 		Enemy(position)
 	{
 
-		sf::Texture *texture = getTexture("media/images/frog.png");
+		sf::Texture *texture = Resources::getTexture("media/images/frog.png");
 		sprite.setTexture(*texture);
 		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 

@@ -21,7 +21,7 @@ public:
 		Object(position)
 	{
 
-		sf::Texture *texture = getTexture(filename);
+		sf::Texture *texture = Resources::getTexture(filename);
 		sprite.setTexture(*texture);
 		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 		int a = 70;

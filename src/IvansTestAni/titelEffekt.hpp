@@ -26,7 +26,7 @@ public:
 	{
         textureSize = Vector2i(70, 70);
         mytexture.create(textureSize.x, textureSize.y);
-        grafText.setFont(*getMainFont());
+        grafText.setFont(*Resources::getMainFont());
         grafText.setCharacterSize(16);
         grafText.setString(String("teststring.\nTESTSTRING!\n:0123456789;"));
         grafText.setPosition(0, 0);

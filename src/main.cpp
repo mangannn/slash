@@ -30,7 +30,7 @@ int main() {
 
 
     
-    setMainFont("media/fonts/pixlfont.ttf");
+    Resources::setMainFont("media/fonts/pixlfont.ttf");
 
 
 	Game *game = new Game();

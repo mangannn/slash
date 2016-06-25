@@ -47,8 +47,8 @@ Game::Game() {
 	map->initPlayers(numJoysticks);
 
 
-    World::add(new RotAni(Vector2f(0,-10)));
-    World::add(new TitelEffekt(Vector2f(120,100)));
+    //World::add(new RotAni(Vector2f(0,-10)));
+    //World::add(new TitelEffekt(Vector2f(120,100)));
 
 
 

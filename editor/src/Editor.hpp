@@ -33,7 +33,7 @@ public:
 		filename(filenameParam)
 	{
 
-		sf::Texture *texture = getTexture(filename);
+		sf::Texture *texture = Resources::getTexture(filename);
 		sprite.setTexture(*texture);
 		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x, (float)texture->getSize().y) / 2.0f);
 	}
@@ -59,7 +59,7 @@ public:
 		filename(filenameParam)
 	{
 
-		sf::Texture *texture = getTexture(filename);
+		sf::Texture *texture = Resources::getTexture(filename);
 		sprite.setTexture(*texture);
 		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 		//pos.y += (float)texture->getSize().y / 2.0f;
@@ -169,11 +169,11 @@ public:
 		selectedRect.setOutlineColor(sf::Color(255, 0, 0));
 
 
-		infoText.setFont(*getMainFont());
+		infoText.setFont(*Resources::getMainFont());
 		infoText.setCharacterSize(40);
 		infoText.setPosition(20, 0);
 
-		helpText.setFont(*getMainFont());
+		helpText.setFont(*Resources::getMainFont());
 		helpText.setCharacterSize(40);
 		helpText.setPosition(300, 0);
 
@@ -187,7 +187,7 @@ public:
 			"left+shift: copy selected object\nwheel:     zoom\nwheel+alt:   change size (collision)"
 			));
 		
-		typeText.setFont(*getMainFont());
+		typeText.setFont(*Resources::getMainFont());
 		typeText.setCharacterSize(40);
 		typeText.setPosition(20, 300);
 

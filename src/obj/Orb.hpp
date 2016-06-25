@@ -21,7 +21,7 @@ public:
 		vel(velocity)
 	{
 
-		sf::Texture *texture = getTexture("media/images/orb.png");
+		sf::Texture *texture = Resources::getTexture("media/images/orb.png");
 		sprite.setTexture(*texture);
 		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 

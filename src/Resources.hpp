@@ -4,9 +4,13 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
-sf::Texture *getTexture(const std::string filename);
+namespace Resources {
 
-void setMainFont(sf::String);
-sf::Font *getMainFont();
+	sf::Texture *getTexture(const std::string filename);
+
+	void setMainFont(sf::String);
+	sf::Font *getMainFont();
+
+}
 
 #endif

@@ -25,7 +25,7 @@ int main() {
 	window->setFramerateLimit(FRAMERATE_LIMIT);
 
 	
-    setMainFont("media/fonts/pixlfont.ttf");
+    Resources::setMainFont("media/fonts/pixlfont.ttf");
 
 
 	Editor *editor = new Editor(window);

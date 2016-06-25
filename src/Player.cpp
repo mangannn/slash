@@ -23,7 +23,7 @@ Player::Player(Vector2f position, int joystickIdParam):
 	bodyBox(&pos, Vector2f(0, -25), 20),
 	swordBox(&pos, Vector2f(0, 10), 4)
 {
-	texture = getTexture("media/images/char.png");
+	texture = Resources::getTexture("media/images/char.png");
 	sprite.setTexture(*texture);
 	sprite.setOrigin(Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y));
 

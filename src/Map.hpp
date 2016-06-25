@@ -166,7 +166,7 @@ private:
 					continue;
 				}
 
-				sf::Texture *texture = getTexture(str1);
+				sf::Texture *texture = Resources::getTexture(str1);
 				bgs[numBgs].setTexture(*texture);
 				bgs[numBgs].setOrigin(sf::Vector2f((float)texture->getSize().x, (float)texture->getSize().y) / 2.0f);
 				bgs[numBgs].setPosition(x, y);

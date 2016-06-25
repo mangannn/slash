@@ -3,9 +3,11 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
+#include "Resources.hpp"
+
 static std::map<std::string, sf::Texture*> texture_list;
 
-sf::Texture *getTexture(const std::string filename) {
+sf::Texture *Resources::getTexture(const std::string filename) {
 	if (texture_list.find(filename) == texture_list.end()) {
 		sf::Texture *texture = new sf::Texture();
 		if (!texture->loadFromFile(filename)) {
@@ -20,12 +22,12 @@ sf::Texture *getTexture(const std::string filename) {
 	}
 }
 
-sf::Font _RESOURCES_mainFont;
+static sf::Font _RESOURCES_mainFont;
 
-void setMainFont(sf::String filename){
-    _RESOURCES_mainFont.loadFromFile(filename);
+void Resources::setMainFont(sf::String filename){
+	_RESOURCES_mainFont.loadFromFile(filename);
 }
 
-sf::Font *getMainFont(){
-    return &_RESOURCES_mainFont;
+sf::Font *Resources::getMainFont(){
+	return &_RESOURCES_mainFont;
 }
