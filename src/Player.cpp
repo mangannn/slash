@@ -11,14 +11,14 @@
 using namespace std;
 
 
-#define MOVEMENT_SPEED (700.0f)
+#define MOVEMENT_SPEED (400.0f)
 
 #define JOYSTICK_THRESHOLD (0.2f)
 
 
 Player::Player(Vector2f position, int joystickIdParam):
 	Object(position),
-	ani(&pos, "media/ani/legsL", 8),
+	ani(&pos, Vector2f(0, 3), "media/ani/feet", 6),
 	legsTimer(0),
 	joystickId(joystickIdParam),
 	walkBox(&pos, Vector2f(0, -14), 14),
@@ -70,7 +70,7 @@ void Player::update(float elapsedTime) {
 		mov = jStickMovementAmount * MOVEMENT_SPEED;
 	}
 
-	legsTimer += 0.05 * mov * elapsedTime;
+	legsTimer += 0.08 * mov * elapsedTime;
 	if (legsTimer > 1.0f) {
 		legsTimer -= 1.0f;
 

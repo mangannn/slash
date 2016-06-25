@@ -21,7 +21,7 @@ public:
 
 	Explotion(Vector2f position):
 		Object(position),
-		ani(&pos, "media/ani/poff", 9)
+		ani(&pos, Vector2f(0,0), "media/ani/poff", 9)
 	{
 	}
 

@@ -12,6 +12,8 @@ public:
 
 	Vector2f *offset;
 
+	Vector2f pos;
+
 	int num;
 
 	sf::Texture **ani;
@@ -19,8 +21,9 @@ public:
 
 	int current;
 
-	Animation(Vector2f *offsetParam, std::string filename, int numParam):
+	Animation(Vector2f *offsetParam, Vector2f position, std::string filename, int numParam):
 		offset(offsetParam),
+		pos(position),
 		num(numParam),
 		current(0)
 	{
@@ -38,8 +41,12 @@ public:
 	}
 
 	virtual void draw(RenderTarget *target) {
-		sprite.setPosition(*offset);
+		sprite.setPosition(getPosition());
 		target->draw(sprite);
+	}
+
+	Vector2f getPosition() {
+		return (*offset) + pos;
 	}
 
 	bool setFrame(int i) {

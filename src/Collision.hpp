@@ -24,7 +24,7 @@ public:
 
 	static bool check(CollisionBox a, CollisionBox b) {
 		float coll_dist = a.r + b.r;
-		Vector2f diff = (*a.offset) - (*b.offset) + a.pos - b.pos;
+		Vector2f diff = a.getPosition() - b.getPosition();
 
 		if (sqrSize(diff) < coll_dist * coll_dist) {
 			return true;
@@ -39,7 +39,7 @@ public:
 		shape.setFillColor(sf::Color(0, 0, 0, 0));
 		shape.setOutlineThickness(1);
 		shape.setOutlineColor(sf::Color(250, 150, 100));
-		shape.setPosition((*offset) + pos - Vector2f(r, r));
+		shape.setPosition(getPosition() - Vector2f(r, r));
 		target->draw(shape);
 	}
 
