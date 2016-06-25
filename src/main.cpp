@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+#include "Functions.hpp"
+#include "Resources.hpp"
+
 #include "Game.hpp"
 
 #define WINDOW_TITLE ("Slash")

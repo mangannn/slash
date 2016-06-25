@@ -6,6 +6,10 @@
 #include "../Resources.hpp"
 #include "Animation.hpp"
 
+#include "../World.hpp"
+
+#include "Enemy.hpp"
+
 
 class Explotion: public Object {
 
@@ -26,7 +30,10 @@ public:
 
 		if (timer > 0.08) {
 			timer -= 0.08;
-			ani.setFrame(ani.getFrame() + 1);
+
+			if (!ani.setFrame(ani.getFrame() + 1)) {
+				World::remove(this);
+			}
 		}
 	}
 

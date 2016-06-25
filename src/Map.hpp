@@ -6,6 +6,7 @@
 #include "obj/Spawn.hpp"
 
 #include <iostream>
+#include <fstream>
 
 #include <string.h>
 
@@ -18,22 +19,38 @@ public:
 
 
 	unsigned int numBgs = 0;
-	sf::Sprite bgs[1000];
+	sf::Sprite bgs[20];
 
 	unsigned int numStatic = 0;
-	CollisionBox staticBoxes[1000];
+	CollisionBox staticBoxes[500];
 
 	unsigned int numImages = 0;
 	cs::Image images[1000];
 
 
 	unsigned int numSpawns = 0;
-	Spawn spawns[1000];
+	Spawn spawns[100];
 	
 
 	Map() {
 
-		loadMap("media/maps/forest.txt");
+
+		std::string mapFilename;
+		std::ifstream file ("media/start-map.txt");
+		if (file.is_open()) {
+			if (!getline(file, mapFilename)) {
+				std::cout << "Unable to read settings file!\n";
+				mapFilename = "media/maps/map.txt";
+			}
+			file.close();
+		} else {
+			std::cout << "Unable to read settings file!\n";
+			mapFilename = "media/maps/map.txt";
+		}
+
+		std::cout << "Loading map: " << mapFilename << "\n";
+		loadMap(mapFilename.c_str());
+
 
 		/*for (unsigned int i = 1; i < numImages; i++) {
 			std::cout << images[i].pos.y - images[i - 1].pos.y << "\n";
@@ -56,6 +73,29 @@ public:
 			spawns[i].draw(target);
 		}
 	}
+
+
+
+	void initPlayers(int num) {
+
+		int playerNum = 0;
+
+		for (unsigned int i = 0; i < numSpawns; i++) {
+			
+			std::string name = spawns[i].type.substr(0, spawns[i].type.find(":"));
+
+			if (name == "player") {
+				World::addPlayer(new Player(spawns[i].pos, playerNum));
+				playerNum += 1;
+
+				if (playerNum >= num) {
+					break;
+				}
+			}
+		}
+	}
+
+
 
 private:
 

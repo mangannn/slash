@@ -1,11 +1,9 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
-#include "Object.hpp"
-#include "Player.hpp"
-#include "obj/Orb.hpp"
-
-#include "Map.hpp"
+class Map;
+class Player;
+class Object;
 
 class Game {
 
@@ -20,6 +18,11 @@ public:
 
 	virtual void draw(sf::RenderTarget *target);
 
+
+	/*static void add(Object *o) {
+		objects->push_back(o);
+	}*/
+
 private:
 
 	sf::View gameView;
@@ -27,15 +30,10 @@ private:
     sf::RenderTexture monitorPixelArea;
 
 
-	std::vector<Object *> *objects;
-	std::vector<Orb *> *orbs;
-	std::vector<Player *> *players;
     float scaleFactor;
 
 	Map *map;
 
-
-	float orbTimer = 0;
 };
 
 #endif

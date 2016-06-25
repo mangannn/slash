@@ -10,14 +10,48 @@
 #include "IvansTestAni/titelEffekt.hpp"
 
 
+#include "Object.hpp"
+#include "Player.hpp"
+#include "Map.hpp"
+
 #include "obj/Enemy.hpp"
 #include "obj/Explotion.hpp"
 
 
 #include "Collision.hpp"
 
+#include "World.hpp"
+
 Game::Game() {
-    
+
+	World::players = new std::vector<Player *>();
+	World::objects = new std::vector<Object *>();
+
+
+	map = new Map();
+
+	int numJoysticks = 0; 
+
+	for (int i = 0; i < 4; i++) {
+		if (sf::Joystick::isConnected(i)) {
+			numJoysticks += 1;
+		} else {
+			break;
+		}
+	}
+
+	if (numJoysticks == 0) {
+		numJoysticks = 1;
+	}
+
+	map->initPlayers(numJoysticks);
+
+
+    World::add(new RotAni(Vector2f(0,-10)));
+    World::add(new TitelEffekt(Vector2f(120,100)));
+
+
+
     scaleFactor = 3.0;
     
     gamePixelArea.create(320, 240);
@@ -27,21 +61,7 @@ Game::Game() {
     
 
 
-	players = new std::vector<Player *>();
 
-	players->push_back(new Player(Vector2f(0,0), 0));
-	//players->push_back(new Player(Vector2f(50,0), 1));
-
-	orbs = new std::vector<Orb *>();
-
-
-	objects = new std::vector<Object *>();
-
-
-	map = new Map();
-
-    objects->push_back(new RotAni(Vector2f(0,-10)));
-    objects->push_back(new TitelEffekt(Vector2f(120,100)));
 
 	gameView.setSize(Vector2f(1000, 1000));
 	gameView.setCenter(Vector2f(0,0));;
@@ -52,30 +72,21 @@ Game::~Game() {
 
 	{
 		Object *temp;
-		while (!objects->empty()) {
-			temp = objects->back();
+		while (!World::objects->empty()) {
+			temp = World::objects->back();
 			delete temp;
-			objects->pop_back();
+			World::objects->pop_back();
 		}
-		delete objects;
+		delete World::objects;
 	}
 	{
 		Object *temp;
-		while (!orbs->empty()) {
-			temp = orbs->back();
+		while (!World::players->empty()) {
+			temp = World::players->back();
 			delete temp;
-			orbs->pop_back();
+			World::players->pop_back();
 		}
-		delete orbs;
-	}
-	{
-		Object *temp;
-		while (!players->empty()) {
-			temp = players->back();
-			delete temp;
-			players->pop_back();
-		}
-		delete players;
+		delete World::players;
 	}
 }
 
@@ -88,10 +99,10 @@ void Game::eventHandle(sf::Event event) {
 
 			switch (event.key.code) {
 				case sf::Keyboard::Return: {
-					std::cout << orbs->size() << std::endl;
+
 				} break;
 				case sf::Keyboard::A: {
-					std::cout << players->at(0)->pos.x << " :\t" << players->at(0)->pos.y << std::endl;
+
 				} break;
 				default: break;
 			}
@@ -108,76 +119,85 @@ void Game::eventHandle(sf::Event event) {
 
 void Game::update(float elapsedTime) {
 
-	for (unsigned int i = 0; i < objects->size(); i++) {
-		objects->at(i)->update(elapsedTime);
-	}
-	for (unsigned int i = 0; i < orbs->size(); i++) {
-		orbs->at(i)->update(elapsedTime);
-	}
-	for (unsigned int i = 0; i < players->size(); i++) {
-		players->at(i)->update(elapsedTime);
+
+	for (unsigned int i = 0; i < map->numSpawns; i++) {
+		map->spawns[i].update(elapsedTime);
 	}
 
-	orbTimer += elapsedTime;
-
-	if (orbTimer > 2) {
-		orbTimer -= 2;
-		orbs->push_back(new Orb(Vector2f(0,0), 40.0f * Vector2f(RANDOM2, RANDOM2)));
-    	objects->push_back(new Enemy(Vector2f(300, 300)));
+	for (unsigned int i = 0; i < World::objects->size(); i++) {
+		World::objects->at(i)->update(elapsedTime);
+	}
+	for (unsigned int i = 0; i < World::players->size(); i++) {
+		World::players->at(i)->update(elapsedTime);
 	}
 
 
-	for (unsigned int i = 0; i < orbs->size(); i++) {
-		if (sqrSize(orbs->at(i)->pos - gameView.getCenter()) > 400 * 400) {
-			Orb *o = orbs->at(i);
-			orbs->erase(orbs->begin() + i);
-			delete o;
-			i -= 1;
-		}
-	}
-
-
-	for (unsigned int j = 0; j < players->size(); j++) {
-		for (unsigned int i = 0; i < map->numStatic; i++) {
-			if (CollisionBox::check(players->at(j)->walkBox, map->staticBoxes[i])) {
-				float coll_dist = players->at(j)->walkBox.r + map->staticBoxes[i].r;
-				Vector2f diff = players->at(j)->walkBox.getPosition() - map->staticBoxes[i].getPosition();
-				players->at(j)->pos += diff * (coll_dist / size(diff) - 1);
+	for (unsigned int i = 0; i < World::objects->size(); i++) {
+		if (dynamic_cast<Orb *>(World::objects->at(i)) != NULL) {
+			if (sqrSize(World::objects->at(i)->pos - gameView.getCenter()) > 400 * 400) {
+				World::remove(World::objects->at(i));
 			}
 		}
 	}
 
-	for (unsigned int j = 0; j < players->size(); j++) {
 
-		for (unsigned int i = 0; i < orbs->size(); i++) {
-			if (CollisionBox::check(players->at(j)->swordBox, orbs->at(i)->box)) {
-				Vector2f diff = players->at(j)->swordBox.getPosition() - orbs->at(i)->pos;
-				orbs->at(i)->vel = orbs->at(i)->vel - 2 * (dot(orbs->at(i)->vel, diff) / sqrSize(diff)) * diff;
-			} else if (CollisionBox::check(players->at(j)->bodyBox, orbs->at(i)->box)) {
-				//std::cout << "Auuu!\n";
+	Enemy *e;
+	Orb *orb;
+
+
+	// Collisions
+	for (unsigned int i = 0; i < map->numStatic; i++) {
+		for (unsigned int j = 0; j < World::players->size(); j++) {
+			if (CollisionBox::check(World::players->at(j)->walkBox, map->staticBoxes[i])) {
+				float coll_dist = World::players->at(j)->walkBox.r + map->staticBoxes[i].r;
+				Vector2f diff = World::players->at(j)->walkBox.getPosition() - map->staticBoxes[i].getPosition();
+				World::players->at(j)->pos += diff * (coll_dist / size(diff) - 1);
 			}
 		}
 
-		Enemy *e;
+		for (unsigned int j = 0; j < World::objects->size(); j++) {
 
-		for (unsigned int i = 0; i < objects->size(); i++) {
-			if ((e = dynamic_cast<Enemy *>(objects->at(i))) != NULL) {
-				if (CollisionBox::check(players->at(j)->swordBox, e->box)) {
+			if ((e = dynamic_cast<Enemy *>(World::objects->at(j))) != NULL) {
+				if (CollisionBox::check(e->box, map->staticBoxes[i])) {
 
-    				objects->push_back(new Explotion(e->pos + Vector2f(0, 20)));
-
-					objects->erase(objects->begin() + i);
-					delete e;
-					i -= 1;
-
+					float coll_dist = e->box.r + map->staticBoxes[i].r;
+					Vector2f diff = e->box.getPosition() - map->staticBoxes[i].getPosition();
+					e->pos += diff * (coll_dist / size(diff) - 1);
 				}
 			}
 		}
 	}
+
+	for (unsigned int j = 0; j < World::players->size(); j++) {
+
+		for (unsigned int i = 0; i < World::objects->size(); i++) {
+
+			if ((orb = dynamic_cast<Orb *>(World::objects->at(i))) != NULL) {
+				if (CollisionBox::check(World::players->at(j)->swordBox, orb->box)) {
+
+					Vector2f diff = World::players->at(j)->swordBox.getPosition() - orb->pos;
+					orb->vel = orb->vel - 2 * (dot(orb->vel, diff) / sqrSize(diff)) * diff;
+
+				} else if (CollisionBox::check(World::players->at(j)->bodyBox, orb->box)) {
+					//std::cout << "Auuu!\n";
+				}
+			}
+
+			if ((e = dynamic_cast<Enemy *>(World::objects->at(i))) != NULL) {
+				if (CollisionBox::check(World::players->at(j)->swordBox, e->box)) {
+
+					e->kill();
+				}
+			}
+		}
+	}
+
+
+	World::update();
 }
 
 
-
+// this is not member of Game, very ugly, but later fix
 int insertByDepth(std::vector<Object *> *list, Object *o) {
 	for (unsigned int i = 0; i < list->size(); i++) {
 		if (o->pos.y < list->at(i)->pos.y) {
@@ -204,7 +224,7 @@ void Game::draw(RenderTarget *target) {
 	// set game view
 	{
 
-		std::vector<Player *> *followedObjects = players;
+		std::vector<Player *> *followedObjects = World::players;
 
 		Vector2f smallest_most = followedObjects->at(0)->pos;
 		Vector2f largest_most = followedObjects->at(0)->pos;
@@ -250,15 +270,11 @@ void Game::draw(RenderTarget *target) {
 
 	std::vector<Object *> sorted; // sorted by depth
 
-
-	for (unsigned int i = 0; i < orbs->size(); i++) {
-		insertByDepth(&sorted, orbs->at(i));
+	for (unsigned int i = 0; i < World::players->size(); i++) {
+		insertByDepth(&sorted, World::players->at(i));
 	}
-	for (unsigned int i = 0; i < players->size(); i++) {
-		insertByDepth(&sorted, players->at(i));
-	}
-	for (unsigned int i = 0; i < objects->size(); i++) {
-		insertByDepth(&sorted, objects->at(i));
+	for (unsigned int i = 0; i < World::objects->size(); i++) {
+		insertByDepth(&sorted, World::objects->at(i));
 	}
 
 

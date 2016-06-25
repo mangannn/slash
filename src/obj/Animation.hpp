@@ -39,11 +39,13 @@ public:
 		target->draw(sprite);
 	}
 
-	void setFrame(int i) {
+	bool setFrame(int i) {
 		if (i < num) {
 			current = i;
 			sprite.setTexture(*ani[current]);
+			return true;
 		}
+		return false;
 	}
 	int getFrame() {
 		return current;

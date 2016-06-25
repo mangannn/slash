@@ -4,6 +4,13 @@
 #include "../Object.hpp"
 #include "../Functions.hpp"
 
+#include "Frog.hpp"
+#include "Orb.hpp"
+
+#include "../World.hpp"
+
+
+
 class Spawn: public Object {
 
 public:
@@ -11,6 +18,12 @@ public:
 	std::string type;
 
 	float r;
+
+	float timer = 0;
+	float spawnIntervall = 2.0;
+
+
+	float what;
 
 	Spawn():
 		Object(Vector2f(0,0))
@@ -20,10 +33,31 @@ public:
 		type(typeParam),
 		r(radius)
 	{
+		std::string name = type.substr(0, type.find(":"));
+
+		if (name == "frog") {
+			what = 0;
+		} else if (name == "orb") {
+			what = 1;
+		} else if (name == "player") {
+			what = 2;
+		} else {
+			what = 3;
+		}
 	}
 
 	virtual void update(float elapsedTime) {
+		timer += elapsedTime;
 
+		if (timer > spawnIntervall) {
+			timer -= spawnIntervall;
+
+			if (what == 0) {
+				World::add(new Frog(pos));
+			} else if (what == 1) {
+				World::add(new Orb(pos, 40.0f * Vector2f(RANDOM2, RANDOM2)));
+			}
+		}
 	}
 
 	virtual void draw(RenderTarget *target) {
