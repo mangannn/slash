@@ -16,11 +16,13 @@
 
 #include "obj/Enemy.hpp"
 #include "obj/Explotion.hpp"
+#include "obj/Flash.hpp"
 
 
 #include "Collision.hpp"
 
 #include "World.hpp"
+
 
 
 
@@ -183,6 +185,9 @@ void Game::update(float elapsedTime) {
 
 					Vector2f diff = World::players->at(j)->swordBox.getPosition() - orb->pos;
 					orb->vel = orb->vel - 2 * (dot(orb->vel, diff) / sqrSize(diff)) * diff;
+
+					//World::add(new Flash((World::players->at(j)->swordBox.getPosition() + orb->pos) * 0.5f));
+					World::add(new Flash(orb->pos + Vector2f(0, 3)));
 
 				} else if (CollisionBox::check(World::players->at(j)->bodyBox, orb->box)) {
 					//std::cout << "Auuu!\n";

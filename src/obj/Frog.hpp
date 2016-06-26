@@ -13,6 +13,8 @@
 
 #include <math.h>
 
+#include "Enemy.hpp"
+
 
 class Frog: public Enemy {
 
