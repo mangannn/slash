@@ -8,7 +8,7 @@
 
 #include "Game.hpp"
 
-#define WINDOW_TITLE ("Slash")
+#define WINDOW_TITLE ("scattered soul")
 #define FRAMERATE_LIMIT (60)
 
 int main() {
