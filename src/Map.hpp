@@ -19,7 +19,7 @@ public:
 
 
 	unsigned int numBgs = 0;
-	sf::Sprite bgs[20];
+	sf::Sprite bgs[420];
 
 	unsigned int numStatic = 0;
 	CollisionBox staticBoxes[500];

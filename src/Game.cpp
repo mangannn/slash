@@ -226,11 +226,11 @@ int insertByDepth(std::vector<Object *> *list, Object *o) {
 void Game::draw(RenderTarget *target) {
 
 	target->clear();
-    gamePixelArea.clear();
+    //gamePixelArea.clear();
 
     monitorPixelArea.clear(Color(0, 0, 0, 0));
     Vector2u targetSize = target->getSize();
-	//float aspect = ((float)targetSize.x / (float)targetSize.y);
+	float aspect = ((float)targetSize.x / (float)targetSize.y);
 
 	// set game view
 	{
@@ -254,10 +254,12 @@ void Game::draw(RenderTarget *target) {
 		}
 
 
-		float scale_multiply = size(smallest_most - largest_most) + 100.0f;
+		// 600
+		float scale_multiply = size(smallest_most - largest_most) + 600.0f;
 
-		if (scale_multiply < 300.0f) {
-			scale_multiply = 300.0f;
+		// 600
+		if (scale_multiply < 600.0f) {
+			scale_multiply = 600.0f;
 		}
 
 		Vector2f newPosition = (smallest_most + largest_most) / 2.0f;
@@ -268,15 +270,15 @@ void Game::draw(RenderTarget *target) {
 		float newMultiply = scale_multiply;
 		float currentMultiply = gameView.getSize().y;
 
-		float aspect = ((float)gamePixelArea.getSize().x / (float)gamePixelArea.getSize().y);
+		//float aspect = ((float)gamePixelArea.getSize().x / (float)gamePixelArea.getSize().y);
 
 		gameView.setSize(Vector2f(aspect, 1.0f) * ((newMultiply - currentMultiply) / 4.0f + currentMultiply));
 		
-		gamePixelArea.setView(gameView);
+		target->setView(gameView);
 
 	}
 
-	map->drawBackground(&gamePixelArea);
+	map->drawBackground(target);
 
 
 	std::vector<Object *> sorted; // sorted by depth
@@ -293,22 +295,22 @@ void Game::draw(RenderTarget *target) {
 
 	for (unsigned int i = 0; i < map->numImages; i++) {
 		while (movable_index < sorted.size() && sorted.at(movable_index)->pos.y < map->images[i].pos.y) {
-			sorted.at(movable_index)->draw(&gamePixelArea, &monitorPixelArea);
+			sorted.at(movable_index)->draw(target, &monitorPixelArea);
 			movable_index += 1;
 		}
-		map->images[i].draw(&gamePixelArea);
+		map->images[i].draw(target);
 	}
 
     for (unsigned int i = movable_index; i < sorted.size(); i++) {
-		sorted.at(i)->draw(&gamePixelArea, &monitorPixelArea);
+		sorted.at(i)->draw(target, &monitorPixelArea);
 	}
 
 
 	// only for debug
-	map->drawDebug(&gamePixelArea);
+	map->drawDebug(target);
 
 
-    gamePixelArea.display();
+    /*gamePixelArea.display();
     monitorPixelArea.display();
     
     {
@@ -324,6 +326,6 @@ void Game::draw(RenderTarget *target) {
         sprite.setOrigin(gamePixelArea.getSize().x / 2 * scaleFactor, gamePixelArea.getSize().y / 2 * scaleFactor);
         sprite.setPosition((int)(targetSize.x / 2.f), (int)(targetSize.y / 2.f));
         target->draw(sprite);
-    }
+    }*/
 }
 
