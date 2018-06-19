@@ -1,7 +1,7 @@
-#ifndef _Image_H_
-#define _Image_H_
+#ifndef _Image_
+#define _Image_
 
-#include "../Object.hpp"
+#include "Object.hpp"
 #include "../Functions.hpp"
 #include "../Resources.hpp"
 

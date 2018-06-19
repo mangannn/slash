@@ -8,6 +8,7 @@ using namespace sf;
 
 float frac(float x);
 
+bool isZero(sf::Vector2f v);
 float size(sf::Vector2f v);
 float sqrSize(sf::Vector2f v);
 
@@ -18,8 +19,28 @@ float angle(sf::Vector2f v);
 float cutToPeriod(float v, float periodStart, float periodEnd);
 float periodValueBetween(float angle, float target, float percent, float period = 360.f);
 
-Vector2f    approach(Vector2f  current, Vector2f target, float percent);
-void        approach(Vector2f *current, Vector2f target, float percent);
+float approach(float  current, float target, float percent);
+
+Vector2f	approach(Vector2f  current, Vector2f target, float percent);
+void		approach(Vector2f *current, Vector2f target, float percent);
+
+float	towardsAngle(float current, float goal, float amount);
+
+float	decrese(float current, float amount);
+float	increse(float current, float amount, float max);
+
+Vector2f	changeVectorSize(Vector2f current, float amount, float max);
+Vector2f	decrese(Vector2f current, float amount);
+Vector2f	increse(Vector2f current, float amount, float max);
+
+
+int discreteDirectionFromVectorEight(Vector2f a);
+int discreteDirectionFromVectorFour(Vector2f a);
+int discreteDirectionFromAngle(float angle, int disc = 8);
+
+float angleFromDiscreteDirection(int dir, int disc = 8);
+
+Vector2f vectorFromDiscreteDirectionEight(int dir);
 
 bool lineIntersect(Vector2f a, Vector2f b, Vector2f c, Vector2f d);
 void lineIntersectDebug();

@@ -27,20 +27,10 @@ public:
 	};
 
 	void draw(RenderTarget *target, Vector2f swordOri, Vector2f swordTip) {
-		
-		Vertex line[] =
-		{
-			//Vertex(swordVertices[1].position, Color::White),
-			Vertex(swordTip, Color::White),
-			Vertex(Vector2f(0,0), Color::White)
-		};
-		
-
 		Transform t;
 		t.translate(swordOri);
 		
 		target->draw(swordVertices, SWORD_VERTEX_COUNT, sf::TrianglesFan, t);
-		target->draw(line, 2, sf::Lines, t);
 	}
 
 	void update(float elapsedTime, Vector2f swordTip) {

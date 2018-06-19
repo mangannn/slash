@@ -1,7 +1,7 @@
 #ifndef _Orb_H_
 #define _Orb_H_
 
-#include "Projectile.hpp"
+#include "../Projectile.hpp"
 
 
 class Orb: public Projectile {

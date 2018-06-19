@@ -2,18 +2,18 @@
 #define _Frog_
 
 #include "../Object.hpp"
-#include "../Functions.hpp"
-#include "../Resources.hpp"
-#include "../Collision.hpp"
+#include "../../Functions.hpp"
+#include "../../Resources.hpp"
+#include "../../Collision.hpp"
 
 
-#include "../World.hpp"
-#include "Projectile.hpp"
-#include "Explotion.hpp"
+#include "../../World.hpp"
+#include "../Projectile.hpp"
+#include "../graphicaleffects/Explotion.hpp"
 
 #include <math.h>
 
-#include "Enemy.hpp"
+#include "../Enemy.hpp"
 
 
 class Frog: public Enemy {
@@ -78,7 +78,7 @@ public:
 		pos += vel * elapsedTime;
 	}
 
-	virtual void draw(RenderTarget *target, RenderTarget *monitor) {
+	virtual void draw(RenderTarget *target) {
 
 		sprite.setRotation(wobble);
 		sprite.setPosition(pos);

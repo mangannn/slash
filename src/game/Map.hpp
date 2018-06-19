@@ -4,6 +4,7 @@
 #include "Functions.hpp"
 #include "obj/Image.hpp"
 #include "obj/Spawn.hpp"
+#include "obj/enemies/Imp.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -19,10 +20,13 @@ public:
 
 
 	unsigned int numBgs = 0;
-	sf::Sprite bgs[420];
+	sf::Sprite bgs[500];
 
 	unsigned int numStatic = 0;
 	CollisionBox staticBoxes[500];
+
+	unsigned int numCollisionLines = 0;
+	CollisionLine collisionLines[500];
 
 	unsigned int numImages = 0;
 	cs::Image images[1000];
@@ -47,11 +51,6 @@ public:
 
 		std::cout << "Loading map: " << mapFilename << "\n";
 		loadMap(mapFilename.c_str());
-
-
-		/*for (unsigned int i = 1; i < numImages; i++) {
-			std::cout << images[i].pos.y - images[i - 1].pos.y << "\n";
-		}*/
 	}
 
 
@@ -64,7 +63,10 @@ public:
 	void drawDebug(RenderTarget *target) {
 
 		for (unsigned int i = 0; i < numStatic; i++) {
-			//staticBoxes[i].draw(target);
+			staticBoxes[i].draw(target);
+		}
+		for (unsigned int i = 0; i < numCollisionLines; i++) {
+			collisionLines[i].draw(target);
 		}
 		for (unsigned int i = 0; i < spawns.size(); i++) {
 			spawns.at(i).draw(target);
@@ -73,21 +75,40 @@ public:
 
 
 
-	void initPlayers(int num) {
+	void init(int numberPlayers) {
 
 		int playerNum = 0;
 
 		for (unsigned int i = 0; i < spawns.size(); i++) {
 			
 			std::string name = spawns.at(i).type.substr(0, spawns.at(i).type.find(":"));
+			std::string arg1 = spawns.at(i).type.substr(1, spawns.at(i).type.find(":"));
 
 			if (name == "player") {
 
-				if (playerNum < num) {
-					World::addPlayer(new Player(spawns.at(i).pos, playerNum));
+				if (playerNum < numberPlayers) {
+					int actionButton[3] = {sf::Keyboard::Z, sf::Keyboard::X, sf::Keyboard::Space};
+					Controls *con = new KeyboardControls(sf::Keyboard::Up, sf::Keyboard::Down, sf::Keyboard::Left, sf::Keyboard::Right, actionButton, 2);
+					World::addPlayer(new Player(spawns.at(i).pos, con));
 				}
 
 				playerNum += 1;
+
+				spawns.erase(spawns.begin() + i);
+				i -= 1;
+			} else if (name == "playerdummy") {
+
+				Controls *con = new DummyControls(atoi(arg1.c_str()));
+				World::addPlayer(new Player(spawns.at(i).pos, con));
+
+				playerNum += 1;
+				
+				spawns.erase(spawns.begin() + i);
+				i -= 1;
+			} else if (name == "imp") {
+
+				World::addObject(new Imp(spawns.at(i).pos));
+
 				spawns.erase(spawns.begin() + i);
 				i -= 1;
 			}
@@ -117,7 +138,7 @@ private:
 		char str1[MAXSTR];
 		char str2[MAXSTR];
 
-		float x = 0, y = 0, r = 0;
+		float x = 0, y = 0, r = 0, x2 = 0, y2 = 0;
 
 		int num_back;
 
@@ -143,6 +164,18 @@ private:
 
 				staticBoxes[numStatic] = CollisionBox(origo, Vector2f(x, y), r);
 				numStatic += 1;
+			} else if (strcmp(str1, "line") == 0) {
+
+				num_back = sscanf(str2, 
+					"%f,%f,%f,%f", 
+					&x, &y, &x2, &y2);
+
+				if (num_back != 4) {
+					continue;
+				}
+
+				collisionLines[numCollisionLines] = CollisionLine(Vector2f(x, y), Vector2f(x2, y2));
+				numCollisionLines += 1;
 			} else if (strcmp(str1, "img") == 0) {
 
 				num_back = sscanf(str2, 

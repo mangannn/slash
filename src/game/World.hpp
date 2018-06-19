@@ -1,50 +1,30 @@
-#ifndef _World_H_
-#define _World_H_
+#ifndef _World_
+#define _World_
+
+#include <vector>
 
 class Object;
 class Spawn;
+class Player;
 
 namespace World {
 
-	std::vector<Object *> *objects;
-	std::vector<Player *> *players;
+	extern std::vector<Object *> *objects;
+	extern std::vector<Player *> *players;
 
-	std::vector<Spawn *> *spawns;
+	//std::vector<Spawn *> *spawns;
 
-
-	std::vector<Object *> objectsToRemove;
-
-
-	void add(Object *o) {
-		objects->push_back(o);
-	}
-
-	void remove(Object *o) {
-		objectsToRemove.push_back(o);
-	}
-
-	void update() {
-
-		Object *temp;
-		while (!objectsToRemove.empty()) {
-			temp = objectsToRemove.back();
-
-			for (unsigned int i = 0; i < objects->size(); i++) {
-				if (temp == objects->at(i)) {
-					objects->erase(objects->begin() + i);
-					break;
-				}
-			}
-
-			delete temp;
-			objectsToRemove.pop_back();
-		}
-	}
+	extern std::vector<Object *> objectsToRemove;
 
 
-	void addPlayer(Player *p) {
-		players->push_back(p);
-	}
+	void add(Object *o);
+
+	void remove(Object *o);
+
+	void update();
+
+	void addPlayer(Player *p);
+	void addObject(Object *o);
 };
 
 #endif

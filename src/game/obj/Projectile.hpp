@@ -1,7 +1,7 @@
 #ifndef _Projectile_H_
 #define _Projectile_H_
 
-#include "../Object.hpp"
+#include "Object.hpp"
 #include "../Functions.hpp"
 #include "../Resources.hpp"
 
@@ -36,7 +36,7 @@ public:
 		pos += vel * elapsedTime;
 	}
 
-	virtual void draw(RenderTarget *target, RenderTarget *monitor) {
+	virtual void draw(RenderTarget *target) {
 
 		sprite.setPosition(pos);
 		target->draw(sprite);

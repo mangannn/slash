@@ -1,22 +1,18 @@
+
 #include <math.h>
 #include <iostream>
+#include <vector>
 
 #include "Resources.hpp"
 #include "Functions.hpp"
 
 #include "Game.hpp"
 
-#include "IvansTestAni/head.hpp"
-#include "IvansTestAni/titelEffekt.hpp"
-
-
-#include "Object.hpp"
-#include "Player.hpp"
+#include "obj/Object.hpp"
+#include "player/Player.hpp"
 #include "Map.hpp"
 
 #include "obj/Enemy.hpp"
-#include "obj/Explotion.hpp"
-#include "obj/Flash.hpp"
 
 
 #include "Collision.hpp"
@@ -39,38 +35,7 @@ Game::Game() {
 
 	map = new Map();
 
-	int numJoysticks = 0; 
-
-	for (int i = 0; i < 4; i++) {
-		if (sf::Joystick::isConnected(i)) {
-			numJoysticks += 1;
-		} else {
-			break;
-		}
-	}
-
-	if (numJoysticks == 0) {
-		numJoysticks = 1;
-	}
-
-	map->initPlayers(numJoysticks);
-
-
-    //World::add(new RotAni(Vector2f(0,-10)));
-    //World::add(new TitelEffekt(Vector2f(120,100)));
-
-
-
-    scaleFactor = 3.0;
-    
-    gamePixelArea.create(320, 240);
-    monitorPixelArea.create((int)(gamePixelArea.getSize().x * scaleFactor), (int)(gamePixelArea.getSize().y * scaleFactor));
-    
-    //gamePixelArea.setSmooth(false);
-    
-
-
-
+	map->init(1 /* one player */);
 
 	gameView.setSize(Vector2f(1000, 1000));
 	gameView.setCenter(Vector2f(0,0));;
@@ -102,15 +67,15 @@ Game::~Game() {
 
 
 void Game::eventHandle(sf::Event event) {
+	for (unsigned int i = 0; i < World::players->size(); i++) {
+		World::players->at(i)->controls->eventHandle(event);
+	}
 
 	switch (event.type) {
 		case sf::Event::KeyPressed: {
 
 			switch (event.key.code) {
 				case sf::Keyboard::Return: {
-
-				} break;
-				case sf::Keyboard::A: {
 
 				} break;
 				default: break;
@@ -151,11 +116,28 @@ void Game::update(float elapsedTime) {
 	}
 
 
-	Enemy *e;
+	Character *ch;
 	Orb *orb;
 
+	Vector2f temp;
 
-	// Collisions
+	// Collisions with lines
+	for (unsigned int i = 0; i < map->numCollisionLines; i++) {
+		for (unsigned int j = 0; j < World::players->size(); j++) {
+			if (!isZero(temp = map->collisionLines[i].checkCollision(World::players->at(j)->walkBox))) {
+				World::players->at(j)->pos += temp;
+			}
+		}
+		for (unsigned int j = 0; j < World::objects->size(); j++) {
+			if ((ch = dynamic_cast<Character *>(World::objects->at(j))) != NULL) {
+				if (!isZero(temp = map->collisionLines[i].checkCollision(ch->walkBox))) {
+					ch->pos += temp;
+				}
+			}
+		}
+	}
+
+	// Collisions with cicles
 	for (unsigned int i = 0; i < map->numStatic; i++) {
 		for (unsigned int j = 0; j < World::players->size(); j++) {
 			if (CollisionBox::check(World::players->at(j)->walkBox, map->staticBoxes[i])) {
@@ -164,42 +146,53 @@ void Game::update(float elapsedTime) {
 				World::players->at(j)->pos += diff * (coll_dist / size(diff) - 1);
 			}
 		}
-
 		for (unsigned int j = 0; j < World::objects->size(); j++) {
+			if ((ch = dynamic_cast<Character *>(World::objects->at(j))) != NULL) {
+				if (CollisionBox::check(ch->walkBox, map->staticBoxes[i])) {
 
-			if ((e = dynamic_cast<Enemy *>(World::objects->at(j))) != NULL) {
-				if (CollisionBox::check(e->box, map->staticBoxes[i])) {
-
-					float coll_dist = e->box.r + map->staticBoxes[i].r;
-					Vector2f diff = e->box.getPosition() - map->staticBoxes[i].getPosition();
-					e->pos += diff * (coll_dist / size(diff) - 1);
+					float coll_dist = ch->walkBox.r + map->staticBoxes[i].r;
+					Vector2f diff = ch->walkBox.getPosition() - map->staticBoxes[i].getPosition();
+					ch->pos += diff * (coll_dist / size(diff) - 1);
 				}
 			}
 		}
 	}
+
+
+
+
 
 	for (unsigned int j = 0; j < World::players->size(); j++) {
 
 		for (unsigned int i = 0; i < World::objects->size(); i++) {
 
 			if ((orb = dynamic_cast<Orb *>(World::objects->at(i))) != NULL) {
-				if (CollisionBox::check(World::players->at(j)->swordBox, orb->box)) {
+				if (World::players->at(j)->weapon->isHitCircle(orb->box)) {
 
-					Vector2f diff = World::players->at(j)->swordBox.getPosition() - orb->pos;
+					Vector2f diff = World::players->at(j)->pos - orb->pos;
 					orb->vel = orb->vel - 2 * (dot(orb->vel, diff) / sqrSize(diff)) * diff;
 
-					//World::add(new Flash((World::players->at(j)->swordBox.getPosition() + orb->pos) * 0.5f));
-					World::add(new Flash(orb->pos + Vector2f(0, 3)));
+					World::add(new Flash(orb->pos));
+					World::players->at(j)->weapon->paray();
 
 				} else if (CollisionBox::check(World::players->at(j)->bodyBox, orb->box)) {
 					//std::cout << "Auuu!\n";
 				}
-			}
+			} else if ((ch = dynamic_cast<Character *>(World::objects->at(i))) != NULL) {
+				if (ch->weapon->isHitCircle(World::players->at(j)->bodyBox)) {
+					World::players->at(j)->pos = ch->pos + 1.2f*(World::players->at(j)->pos - ch->pos);
+					World::players->at(j)->hit(Vector2f(0,0));
+				}
+				if (World::players->at(j)->weapon->isHitCircle(ch->bodyBox)) {
+					ch->hit(Vector2f(0,0));
+				}
 
-			if ((e = dynamic_cast<Enemy *>(World::objects->at(i))) != NULL) {
-				if (CollisionBox::check(World::players->at(j)->swordBox, e->box)) {
+				if (World::players->at(j)->weapon->canParay() && World::players->at(j)->weapon->isHitCircle(ch->weapon->getParayBox())) {
+					//World::players->at(j)->sword.hit(imp->spearBox.getPosition(), 0 /*hard*/);
+					
+					World::add(new Flash(ch->weapon->getParayBox().getPosition()));
 
-					e->kill();
+					ch->weapon->paray();
 				}
 			}
 		}
@@ -228,9 +221,7 @@ int insertByDepth(std::vector<Object *> *list, Object *o) {
 void Game::draw(RenderTarget *target) {
 
 	target->clear();
-    //gamePixelArea.clear();
 
-    monitorPixelArea.clear(Color(0, 0, 0, 0));
     Vector2u targetSize = target->getSize();
 	float aspect = ((float)targetSize.x / (float)targetSize.y);
 
@@ -257,11 +248,11 @@ void Game::draw(RenderTarget *target) {
 
 
 		// 600
-		float scale_multiply = size(smallest_most - largest_most) + 600.0f;
+		float scale_multiply = size(smallest_most - largest_most) + 250.0f;
 
 		// 600
-		if (scale_multiply < 600.0f) {
-			scale_multiply = 600.0f;
+		if (scale_multiply < 250.0f) {
+			scale_multiply = 250.0f;
 		}
 
 		Vector2f newPosition = (smallest_most + largest_most) / 2.0f;
@@ -297,37 +288,18 @@ void Game::draw(RenderTarget *target) {
 
 	for (unsigned int i = 0; i < map->numImages; i++) {
 		while (movable_index < sorted.size() && sorted.at(movable_index)->pos.y < map->images[i].pos.y) {
-			sorted.at(movable_index)->draw(target, &monitorPixelArea);
+			sorted.at(movable_index)->draw(target);
 			movable_index += 1;
 		}
 		map->images[i].draw(target);
 	}
 
     for (unsigned int i = movable_index; i < sorted.size(); i++) {
-		sorted.at(i)->draw(target, &monitorPixelArea);
+		sorted.at(i)->draw(target);
 	}
 
 
 	// only for debug
-	map->drawDebug(target);
-
-
-    /*gamePixelArea.display();
-    monitorPixelArea.display();
-    
-    {
-        Sprite sprite(gamePixelArea.getTexture());
-        sprite.setOrigin(gamePixelArea.getSize().x / 2, gamePixelArea.getSize().y / 2);
-        sprite.setPosition((int)(targetSize.x / 2.f), (int)(targetSize.y / 2.f));
-        sprite.setScale(scaleFactor,scaleFactor);
-        target->draw(sprite);
-    }
-    
-    {
-        Sprite sprite(monitorPixelArea.getTexture());
-        sprite.setOrigin(gamePixelArea.getSize().x / 2 * scaleFactor, gamePixelArea.getSize().y / 2 * scaleFactor);
-        sprite.setPosition((int)(targetSize.x / 2.f), (int)(targetSize.y / 2.f));
-        target->draw(sprite);
-    }*/
+	//map->drawDebug(target);
 }
 

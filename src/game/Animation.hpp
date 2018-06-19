@@ -1,9 +1,8 @@
 #ifndef _Animation_H_
 #define _Animation_H_
 
-#include "../Object.hpp"
-#include "../Functions.hpp"
-#include "../Resources.hpp"
+#include "Functions.hpp"
+#include "Resources.hpp"
 
 
 class Animation {

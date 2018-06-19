@@ -1,11 +1,11 @@
-#ifndef _Spawn_H_
-#define _Spawn_H_
+#ifndef _Spawn_
+#define _Spawn_
 
-#include "../Object.hpp"
+#include "Object.hpp"
 #include "../Functions.hpp"
 
-#include "Frog.hpp"
-#include "Orb.hpp"
+#include "enemies/Frog.hpp"
+#include "projectiles/Orb.hpp"
 
 #include "../World.hpp"
 

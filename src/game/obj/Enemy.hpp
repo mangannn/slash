@@ -1,7 +1,7 @@
 #ifndef _ENEMY_H_
 #define _ENEMY_H_
 
-#include "../Object.hpp"
+#include "Object.hpp"
 #include "../Collision.hpp"
 
 

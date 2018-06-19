@@ -12,6 +12,9 @@ float frac(float x) {
 	return x - floor(x);
 }
 
+bool isZero(sf::Vector2f v) {
+	return (v.x == 0) && (v.y == 0);
+}
 float size(sf::Vector2f v) {
 	return sqrt((v.x * v.x) + (v.y * v.y));
 }
@@ -42,14 +45,184 @@ float periodValueBetween(float angle, float target, float percent, float period)
 	return cutToPeriod(diffrence * percent + angle, 0, period);
 }
 
+
+float approach(float current, float target, float percent) {
+	return (target - current) * percent + current;;
+}
+
 Vector2f approach(Vector2f current, Vector2f target, float percent) {
-    approach(&current, target, percent);
-    return current;
+	approach(&current, target, percent);
+	return current;
 }
 
 void approach(Vector2f *current, Vector2f target, float percent) {
-    *current = (target - *current) * percent + *current;
+	*current = (target - *current) * percent + *current;
 }
+
+
+float	towardsAngle(float current, float goal, float amount) {
+
+	if (current - goal > M_PI) {
+		current -= M_PI * 2.f;
+	} else if (-(current - goal) > M_PI) {
+		current += M_PI * 2.f;
+	}
+
+	if (current < goal) {
+		current += amount;
+		if (current > goal) {
+			current = goal;
+		}
+	} else {
+		current -= amount;
+		if (current < goal) {
+			current = goal;
+		}
+	}
+
+	return current;
+}
+
+float	decrese(float current, float amount) {
+	if (current < amount) {
+		return 0;
+	} else {
+		return current  - amount;
+	}
+}
+float	increse(float current, float amount, float max) {
+	if (current > max - amount) {
+		return max;
+	} else {
+		return current + amount;
+	}
+}
+
+Vector2f	changeVectorSize(Vector2f current, float amount, float max) {
+	if (amount > 0) {
+		return increse(current, amount, max);
+	} else {
+		return decrese(current, -amount);
+	}
+}
+Vector2f	decrese(Vector2f current, float amount) {
+	float s = size(current);
+	if (s < amount) {
+		return Vector2f(0,0);
+	} else {
+		return current * (1 - (amount/s));
+	}
+}
+Vector2f	increse(Vector2f current, float amount, float max) {
+	float s = size(current);
+	if (s == 0.f) {
+		return Vector2f(0,0);
+	} else if (s > max - amount) {
+		return current * (max/s);;
+	} else {
+		return current * (1 + (amount/s));
+	}
+}
+
+int discreteDirectionFromVectorEight(Vector2f a) {
+	float absX = abs(a.x);
+	float absY = abs(a.y);
+
+	if (absX > absY) {
+		// vertical side
+		float half = absX * 0.4142;
+		if (a.x > 0) {
+			// left side
+			if (a.y > half) return 1; // south-east
+			if (a.y < -half) return 7; // north-east
+			return 0; // east
+		} else {
+			// right side
+			if (a.y > half) return 3; // south-west
+			if (a.y < -half) return 5; // north-west
+			return 4; // west
+		}
+	} else {
+		// horisontal side
+		float half = absY * 0.4142;
+		if (a.y > 0) {
+			// bottom
+			if (a.x > half) return 1; // south-east
+			if (a.x < -half) return 3; // south-west
+			return 2; // south
+		} else {
+			// top
+			if (a.x > half) return 7; // north-east
+			if (a.x < -half) return 5; // north-west
+			return 6; // north
+		}
+	}
+}
+
+int discreteDirectionFromVectorFour(Vector2f a) {
+	float absX = abs(a.x);
+	float absY = abs(a.y);
+
+	if (absX > absY) {
+		// vertical side
+		if (a.x > 0) {
+			// left side
+			return 0; // east
+		} else {
+			// right side
+			return 2; // west
+		}
+	} else {
+		// horisontal side
+		if (a.y > 0) {
+			// bottom
+			return 1; // south
+		} else {
+			// top
+			return 3; // north
+		}
+	}
+}
+
+int discreteDirectionFromAngle(float angle, int disc) {
+
+	float intervall = 2.f * M_PI / disc;
+
+	while (angle < 0) {
+		angle += 2.f * M_PI;
+	}
+
+	angle += intervall / 2.f;
+
+	int dir = 0;
+	while (angle > intervall) {
+		angle -= intervall;
+		dir++;
+	}
+	while (dir >= disc) {
+		dir -= disc;
+	}
+	return dir;
+}
+
+float angleFromDiscreteDirection(int dir, int disc) {
+	return (2.f / (float)disc) * M_PI * (float)dir;
+}
+
+Vector2f vectorFromDiscreteDirectionEight(int dir) {
+	switch (dir) {
+		case 0: return Vector2f(1,0);
+		case 1: return Vector2f(M_SQRT1_2,M_SQRT1_2);
+		case 2: return Vector2f(0,1);
+		case 3: return Vector2f(-M_SQRT1_2,M_SQRT1_2);
+		case 4: return Vector2f(-1,0);
+		case 5: return Vector2f(-M_SQRT1_2,-M_SQRT1_2);
+		case 6: return Vector2f(0,-1);
+		case 7: return Vector2f(M_SQRT1_2,-M_SQRT1_2);
+		default: return Vector2f(0,0);
+	}
+}
+
 
 bool lineIntersect(Vector2f a1, Vector2f a2, Vector2f b1, Vector2f b2) {
 	
@@ -151,8 +324,8 @@ void lineIntersectDebug() {
 
 
 Color tintColor(Color c, int amount) {
-    c.r += 10 * amount;
-    c.g += 5 *amount;
-    c.b += -30 * amount;
-    return c;
+	c.r += 10 * amount;
+	c.g += 5 *amount;
+	c.b += -30 * amount;
+	return c;
 }

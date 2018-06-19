@@ -1,8 +1,8 @@
-#ifndef _GraphicalEffect_H_
-#define _GraphicalEffect_H_
+#ifndef _GraphicalEffect_
+#define _GraphicalEffect_
 
-#include "../Object.hpp"
-#include "Animation.hpp"
+#include "Object.hpp"
+#include "../Animation.hpp"
 
 #include "../World.hpp"
 
@@ -36,7 +36,7 @@ public:
 		}
 	}
 
-	virtual void draw(RenderTarget *target, RenderTarget *monitor) {
+	virtual void draw(RenderTarget *target) {
 		ani.draw(target);
 	}
 };

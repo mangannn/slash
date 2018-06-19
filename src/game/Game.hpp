@@ -1,9 +1,7 @@
-#ifndef _GAME_H_
-#define _GAME_H_
+#ifndef _Game_
+#define _Game_
 
 class Map;
-class Player;
-class Object;
 
 class Game {
 
@@ -21,11 +19,8 @@ public:
 private:
 
 	sf::View gameView;
-    sf::RenderTexture gamePixelArea;
-    sf::RenderTexture monitorPixelArea;
 
-
-    float scaleFactor;
+	float scaleFactor;
 
 	Map *map;
 
