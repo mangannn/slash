@@ -1,0 +1,18 @@
+bg{media/images/brown.png, 131.947479, -23.218044}
+spawn{player:0, 130.429504, -88.492294, 20.000000}
+spawn{frog:1, 133.465515, -8.037975, 20.000000}
+load{media/maps/loading_test/m2.txt, 390.495728, -16.555412, 119.655754, 0.000000}
+load{media/maps/loading_test/m3.txt, -82.774643, -20.445297, 122.085258, -3.105377}
+box{8.180466, 310.482574, 100.000000}
+line{-124.244270, -121.640305, 378.969849, -123.034256}
+line{374.787994, 81.875641, -114.486664, 93.027191}
+img{media/images/gran.png, -61.516743, -152.307098}
+img{media/images/gran.png, 182.423584, -150.913147}
+img{media/images/gran.png, 56.968590, -148.125259}
+img{media/images/gran.png, 285.575531, -148.125259}
+img{media/images/gran.png, 328.787811, -145.337372}
+img{media/images/gran.png, 328.787811, 118.118179}
+img{media/images/gran.png, 45.817039, 137.633438}
+img{media/images/gran.png, 132.241608, 137.633438}
+img{media/images/gran.png, 245.151154, 140.421326}
+img{media/images/gran.png, -48.971252, 148.784988}

@@ -1,1 +1,1 @@
-media/maps/arena.txt
+media/maps/arena2.txt
