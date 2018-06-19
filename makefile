@@ -2,8 +2,8 @@ CC			= g++
 
 #DEBUG		= -g -D DEBUG
 
-LFLAGS		= -Wall $(DEBUG) $(LIBS) $(LINKS)
-CFLAGS		= -Wall -MMD $(DEBUG) $(INCLUDES) $(DEFINES)
+LFLAGS		= -Wall $(DEBUG)
+CFLAGS		= -Wall -MMD $(DEBUG)
 
 TARGET		= game.exe
 
@@ -17,19 +17,19 @@ INCLUDES	=
 
 LIBS		= 
 
-LINKS		= -lsfml-window -lsfml-audio -lsfml-graphics -lsfml-system
+LINKS		= -lsfml-graphics -lsfml-window -lsfml-system
 
 
 
 build: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(LFLAGS) -o $(TARGET) $(OBJS)
+	$(CC) $(LFLAGS) $(OBJS) -o $(TARGET) $(LIBS) $(LINKS)
 
 build/game/%.o: src/game/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@ 
+	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES) $(DEFINES)
 build/game/%.o: src/game/*/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES) $(DEFINES)
 
 
 clean:

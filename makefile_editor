@@ -2,8 +2,8 @@ CC			= g++
 
 #DEBUG		= -g -D DEBUG
 
-LFLAGS		= -Wall $(DEBUG) $(LIBS) $(LINKS)
-CFLAGS		= -Wall -MMD $(DEBUG) $(INCLUDES) $(DEFINES)
+LFLAGS		= -Wall $(DEBUG)
+CFLAGS		= -Wall -MMD $(DEBUG)
 
 TARGET		= editor.exe
 
@@ -24,13 +24,13 @@ LINKS		= -lsfml-window -lsfml-audio -lsfml-graphics -lsfml-system
 build: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(LFLAGS) -o $(TARGET) $(OBJS)
+	$(CC) $(LFLAGS) $(OBJS) -o $(TARGET) $(LIBS) $(LINKS)
 
 
 build/editor/%.o: src/editor/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@ 
+	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES) $(DEFINES)
 build/editor/%.o: src/editor/*/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES) $(DEFINES)
 
 
 clean:
