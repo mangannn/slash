@@ -1,0 +1,37 @@
+CC			= g++
+
+#DEBUG		= -g -D DEBUG
+
+FLAGS		= -Wall $(DEBUG)
+
+TARGET		= game.exe
+TARGET2		= editor.exe
+
+SRCS		= \
+$(wildcard src/game/*.cpp src/game/*/*.cpp)
+
+SRCS2		= \
+$(wildcard src/editor/*.cpp src/editor/*/*.cpp)
+
+DEFINES		= 
+
+INCLUDES	= -I C:/SFML/include
+
+LIBS		= -L C:/SFML/lib
+
+LINKS		= -lsfml-graphics -lsfml-window -lsfml-system
+
+
+DLLS		= $(addprefix SFML/bin/, sfml-graphics-2.dll sfml-window-2.dll sfml-system-2.dll)
+
+
+game: $(TARGET)
+
+editor: $(TARGET2)
+
+$(TARGET):
+	$(CC) $(FLAGS) $(SRCS) -o $(TARGET) $(INCLUDES) $(DEFINES) $(LIBS) $(LINKS)
+
+$(TARGET2):
+	$(CC) $(FLAGS) $(SRCS2) -o $(TARGET2) $(INCLUDES) $(DEFINES) $(LIBS) $(LINKS)
+

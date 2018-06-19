@@ -1,0 +1,38 @@
+
+# gcc
+
+- Download MinGW from mingw.org (link is at top right of the homepage)
+- Install MinGW with the downloaded file mingw-get-setup.exe (mingw32-gcc-g++)
+- Edit enviroment variables, add "C:\MinGW\bin" to "Path"
+
+- Test compile:
+	g++ hello.cpp -o hello.exe
+- Test run:		
+	hello.exe
+- Test output:
+	"Hello!"
+
+# SFML
+
+- Go to sfml.org and download sfml for MinGW32 Windows
+- Extract and move SFML-X.X to "C:\" and rename it SFML
+- Edit enviroment variables, add "C:\SFML\bin" to "Path"
+
+- Test compile:
+	g++ sfml.cpp -o sfml.exe -I C:/SFML/include -L C:/SFML/lib -lsfml-graphics -lsfml-window -lsfml-system
+- Test run:
+	sfml.exe
+- Test output:
+	Window with green cicle in it. It should close when trying to close it.
+
+# Git
+
+- Download and install Git
+
+
+# Enviroment variables
+
+- Permantly edit by searching for "Enviroment variables" and enter "Enviroment variables something something system"
+- Hit "Enviroment variables" and edit
+
+- Temporarly edit by executing "set PATH=X;%PATH%", this adds "X" to "Path"
