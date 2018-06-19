@@ -27,13 +27,10 @@ public:
 	unsigned int numImages = 0;
 	cs::Image images[1000];
 
-
-	unsigned int numSpawns = 0;
-	Spawn spawns[100];
+	std::vector<Spawn> spawns;
 	
 
 	Map() {
-
 
 		std::string mapFilename;
 		std::ifstream file ("media/start-map.txt");
@@ -69,8 +66,8 @@ public:
 		for (unsigned int i = 0; i < numStatic; i++) {
 			//staticBoxes[i].draw(target);
 		}
-		for (unsigned int i = 0; i < numSpawns; i++) {
-			spawns[i].draw(target);
+		for (unsigned int i = 0; i < spawns.size(); i++) {
+			spawns.at(i).draw(target);
 		}
 	}
 
@@ -80,17 +77,19 @@ public:
 
 		int playerNum = 0;
 
-		for (unsigned int i = 0; i < numSpawns; i++) {
+		for (unsigned int i = 0; i < spawns.size(); i++) {
 			
-			std::string name = spawns[i].type.substr(0, spawns[i].type.find(":"));
+			std::string name = spawns.at(i).type.substr(0, spawns.at(i).type.find(":"));
 
 			if (name == "player") {
-				World::addPlayer(new Player(spawns[i].pos, playerNum));
-				playerNum += 1;
 
-				if (playerNum >= num) {
-					break;
+				if (playerNum < num) {
+					World::addPlayer(new Player(spawns.at(i).pos, playerNum));
 				}
+
+				playerNum += 1;
+				spawns.erase(spawns.begin() + i);
+				i -= 1;
 			}
 		}
 	}
@@ -184,8 +183,7 @@ private:
 				}
 
 
-				spawns[numSpawns] = Spawn(Vector2f(x, y), str1, r);
-				numSpawns += 1;
+				spawns.push_back(Spawn(Vector2f(x, y), str1, r));
 			}
 		}
 		fclose(file);

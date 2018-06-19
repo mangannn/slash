@@ -26,7 +26,8 @@
 
 
 
-#define PARTICLE_TRACKING_DIST (1000.0f)
+#define PARTICLE_DESPAWN_DIST (1000.0f)
+#define ENEMY_DESPAWN_DIST (10000.0f)
 
 
 
@@ -128,8 +129,8 @@ void Game::eventHandle(sf::Event event) {
 void Game::update(float elapsedTime) {
 
 
-	for (unsigned int i = 0; i < map->numSpawns; i++) {
-		map->spawns[i].update(elapsedTime);
+	for (unsigned int i = 0; i < map->spawns.size(); i++) {
+		map->spawns.at(i).update(elapsedTime);
 	}
 
 	for (unsigned int i = 0; i < World::objects->size(); i++) {
@@ -140,9 +141,10 @@ void Game::update(float elapsedTime) {
 	}
 
 
+	// despawn particles
 	for (unsigned int i = 0; i < World::objects->size(); i++) {
 		if (dynamic_cast<Projectile *>(World::objects->at(i)) != NULL) {
-			if (sqrSize(World::objects->at(i)->pos - gameView.getCenter()) > PARTICLE_TRACKING_DIST * PARTICLE_TRACKING_DIST) {
+			if (sqrSize(World::objects->at(i)->pos - gameView.getCenter()) > PARTICLE_DESPAWN_DIST * PARTICLE_DESPAWN_DIST) {
 				World::remove(World::objects->at(i));
 			}
 		}

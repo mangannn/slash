@@ -8,6 +8,8 @@ namespace World {
 	std::vector<Object *> *objects;
 	std::vector<Player *> *players;
 
+	std::vector<Spawn *> *spawns;
+
 
 	std::vector<Object *> objectsToRemove;
 

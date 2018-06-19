@@ -9,10 +9,11 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Collision.hpp"
 
-
+#include "Functions.hpp"
 #include "Resources.hpp"
+
+using namespace sf;
 
 
 #define SELECTION_SHIFT (3)
@@ -71,12 +72,37 @@ public:
 	}
 };
 
+class CollisionBox {
+
+public:
+
+	Vector2f pos;
+	float r;
+
+	CollisionBox() {}
+	CollisionBox(Vector2f position, float radius):
+		pos(position),
+		r(radius)
+	{
+	}
+
+	void draw(RenderTarget *target) {
+
+		// for debug
+		sf::CircleShape shape(r);
+		shape.setFillColor(sf::Color(0, 0, 0, 0));
+		shape.setOutlineThickness(1);
+		shape.setOutlineColor(sf::Color(250, 150, 100));
+		shape.setPosition(pos - Vector2f(r, r));
+		target->draw(shape);
+	}
+};
+
 class Spawn {
 
 public:
 
 	Vector2f pos;
-
 
 	std::string type;
 
@@ -120,9 +146,6 @@ public:
 	std::vector<Spawn> spawns;
 
 
-	Vector2f *origo = new Vector2f(0,0);
-
-
 	bool mouseMove = false;
 	Vector2f mouseMoveVec;
 
@@ -161,6 +184,19 @@ public:
 
 		std::cout << "Loading map: " << mapFilename << "\n";
 		loadMap(mapFilename.c_str());
+
+		if (bgs.size() < 1) {
+			bgs.push_back(Background(Vector2f(0,0), "null"));
+		}
+		if (images.size() < 1) {
+			images.push_back(ImageM(Vector2f(0,0), "null"));
+		}
+		if (staticBoxes.size() < 1) {
+			staticBoxes.push_back(CollisionBox(Vector2f(0,0), 100));
+		}
+		if (spawns.size() < 1) {
+			spawns.push_back(Spawn(Vector2f(0,0), "null", 20));
+		}
 
 		selectedRect.setSize(sf::Vector2f(30, 30));
 		selectedRect.setOrigin(sf::Vector2f((float)selectedRect.getSize().x / 2.0f, (float)selectedRect.getSize().y / 2.0f));
@@ -238,7 +274,7 @@ public:
 								}
 							} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
 								if (state == 0) {
-									staticBoxes.push_back(CollisionBox(origo, coord, staticBoxes.at(selected).r));
+									staticBoxes.push_back(CollisionBox(coord, staticBoxes.at(selected).r));
 									selected = staticBoxes.size() - 1;
 								} else if (state == 1) {
 									selected = addImage(ImageM(coord, images.at(selected).filename));
@@ -605,7 +641,7 @@ public:
 
 		if (!(file = fopen(path, "r"))) {
 			std::cout << "Failed to open file: " << path << std::endl;
-			exit(-1);
+			return;
 		}
 
 		const int MAXSTR = 256;
@@ -638,7 +674,7 @@ public:
 					continue;
 				}
 
-				staticBoxes.push_back(CollisionBox(origo, Vector2f(x, y), r));
+				staticBoxes.push_back(CollisionBox(Vector2f(x, y), r));
 
 			} else if (strcmp(str1, "img") == 0) {
 

@@ -20,7 +20,7 @@ public:
 	float r;
 
 	float timer = 0;
-	float spawnIntervall = 4.0;
+	float spawnIntervall = 4.9;
 
 
 	float what;
