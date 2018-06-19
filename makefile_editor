@@ -5,16 +5,15 @@ CC			= g++
 LFLAGS		= -Wall $(DEBUG) $(LIBS) $(LINKS)
 CFLAGS		= -Wall -MMD $(DEBUG) $(INCLUDES) $(DEFINES)
 
-TARGET		= BIN
+TARGET		= editor.exe
 
-SRCS		= \
-$(wildcard src/*.cpp src/*/*.cpp)
+SRCS		= $(wildcard src/editor/*.cpp src/editor/*/*.cpp)
 
-OBJS		= $(addprefix build/, $(notdir $(SRCS:.cpp=.o)))
+OBJS		= $(addprefix build/editor/, $(notdir $(SRCS:.cpp=.o)))
 
 DEFINES		= 
 
-INCLUDES	= -I ../src/
+INCLUDES	= 
 
 LIBS		= 
 
@@ -27,10 +26,12 @@ build: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) $(LFLAGS) -o $(TARGET) $(OBJS)
 
-build/%.o: src/%.cpp
+
+build/editor/%.o: src/editor/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@ 
-build/%.o: src/*/%.cpp
+build/editor/%.o: src/editor/*/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
+
 
 clean:
 	rm -fv $(OBJS) $(OBJS:.o=.d) $(TARGET)
@@ -44,3 +45,6 @@ cleandepend:
 	rm -fv $(OBJS:.o=.d)
 
 -include $(OBJS:.o=.d)
+
+valgrind: $(TARGET)
+	(valgrind --show-reachable=yes --leak-check=full -v ./$(TARGET))

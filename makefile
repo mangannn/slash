@@ -5,12 +5,11 @@ CC			= g++
 LFLAGS		= -Wall $(DEBUG) $(LIBS) $(LINKS)
 CFLAGS		= -Wall -MMD $(DEBUG) $(INCLUDES) $(DEFINES)
 
-TARGET		= slash
+TARGET		= game.exe
 
-SRCS		= \
-$(wildcard src/*.cpp src/*/*.cpp)
+SRCS		= $(wildcard src/game/*.cpp src/game/*/*.cpp)
 
-OBJS		= $(addprefix build/, $(notdir $(SRCS:.cpp=.o)))
+OBJS		= $(addprefix build/game/, $(notdir $(SRCS:.cpp=.o)))
 
 DEFINES		= 
 
@@ -27,10 +26,11 @@ build: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) $(LFLAGS) -o $(TARGET) $(OBJS)
 
-build/%.o: src/%.cpp
+build/game/%.o: src/game/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@ 
-build/%.o: src/*/%.cpp
+build/game/%.o: src/game/*/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
+
 
 clean:
 	rm -fv $(OBJS) $(OBJS:.o=.d) $(TARGET)
@@ -44,3 +44,6 @@ cleandepend:
 	rm -fv $(OBJS:.o=.d)
 
 -include $(OBJS:.o=.d)
+
+valgrind: $(TARGET)
+	(valgrind --show-reachable=yes --leak-check=full -v ./$(TARGET))

@@ -2,6 +2,7 @@
 #define _World_H_
 
 class Object;
+class Spawn;
 
 namespace World {
 
