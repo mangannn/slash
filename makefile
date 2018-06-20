@@ -1,39 +1,35 @@
 CC			= g++
 
 #DEBUG		= -g -D DEBUG
-
 LFLAGS		= -Wall $(DEBUG)
 CFLAGS		= -Wall -MMD $(DEBUG)
 
 TARGET		= game.exe
 
-SRCS		= $(wildcard src/game/*.cpp src/game/*/*.cpp)
-
-OBJS		= $(addprefix build/game/, $(notdir $(SRCS:.cpp=.o)))
+SRCS		= $(wildcard src/game/*.cpp src/game/**/*.cpp)
+OBJS		= $(patsubst src/%, build/%, $(SRCS:.cpp=.o))
+PATH_FS		= $(addsuffix .f, $(dir $(OBJS)))
+DEPS		= $(OBJS:.o=.d)
 
 DEFINES		= 
-
 INCLUDES	= 
-
 LIBS		= 
-
 LINKS		= -lsfml-graphics -lsfml-window -lsfml-system
-
 
 
 build: $(TARGET)
 
-$(TARGET): $(OBJS)
+$(TARGET): $(PATH_FS) $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) -o $(TARGET) $(LIBS) $(LINKS)
 
-build/game/%.o: src/game/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES) $(DEFINES)
-build/game/%.o: src/game/*/%.cpp
+build/%.o: src/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES) $(DEFINES)
 
+%/.f:
+	mkdir -p $(dir $@) && touch $@
 
 clean:
-	rm -fv $(OBJS) $(OBJS:.o=.d) $(TARGET)
+	rm -rv build/
 
 rebuild: clean build
 
@@ -41,9 +37,9 @@ run:
 	./$(TARGET)
 
 cleandepend:
-	rm -fv $(OBJS:.o=.d)
+	rm -fv $(DEPS)
 
--include $(OBJS:.o=.d)
+-include $(DEPS)
 
 valgrind: $(TARGET)
 	(valgrind --show-reachable=yes --leak-check=full -v ./$(TARGET))

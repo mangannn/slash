@@ -1,40 +1,35 @@
 CC			= g++
 
 #DEBUG		= -g -D DEBUG
-
 LFLAGS		= -Wall $(DEBUG)
 CFLAGS		= -Wall -MMD $(DEBUG)
 
 TARGET		= editor.exe
 
-SRCS		= $(wildcard src/editor/*.cpp src/editor/*/*.cpp)
-
-OBJS		= $(addprefix build/editor/, $(notdir $(SRCS:.cpp=.o)))
+SRCS		= $(wildcard src/editor/*.cpp src/editor/**/*.cpp)
+OBJS		= $(patsubst src/%, build/%, $(SRCS:.cpp=.o))
+PATH_FS		= $(addsuffix .f, $(dir $(OBJS)))
+DEPS		= $(OBJS:.o=.d)
 
 DEFINES		= 
-
 INCLUDES	= 
-
 LIBS		= 
-
-LINKS		= -lsfml-window -lsfml-audio -lsfml-graphics -lsfml-system
-
+LINKS		= -lsfml-graphics -lsfml-window -lsfml-system
 
 
 build: $(TARGET)
 
-$(TARGET): $(OBJS)
+$(TARGET): $(PATH_FS) $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) -o $(TARGET) $(LIBS) $(LINKS)
 
-
-build/editor/%.o: src/editor/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES) $(DEFINES)
-build/editor/%.o: src/editor/*/%.cpp
+build/%.o: src/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES) $(DEFINES)
 
+%/.f:
+	mkdir -p $(dir $@) && touch $@
 
 clean:
-	rm -fv $(OBJS) $(OBJS:.o=.d) $(TARGET)
+	rm -rv build/
 
 rebuild: clean build
 
@@ -42,9 +37,9 @@ run:
 	./$(TARGET)
 
 cleandepend:
-	rm -fv $(OBJS:.o=.d)
+	rm -fv $(DEPS)
 
--include $(OBJS:.o=.d)
+-include $(DEPS)
 
 valgrind: $(TARGET)
 	(valgrind --show-reachable=yes --leak-check=full -v ./$(TARGET))
