@@ -34,6 +34,8 @@ public:
 
 	State state = State::Point;
 
+	bool gotHit = false;
+
 	float spearDir = 0;
 
 	float timer = 0;
@@ -58,9 +60,9 @@ public:
 		timer += elapsedTime;
 
 		if (state == State::Hurt) {
-			const float a = 0.2f;
+			const float a = 0.3f;
 
-			spearBox.pos = Vector2f(0, -32);
+			spearBox.pos = Vector2f(0, 0);
 			if (timer < a) {
 				spearDir = characterDirection + approach(0, M_PI_2, timer/a);
 			} else {
@@ -75,14 +77,14 @@ public:
 
 			tip = 56.f * Vector2f(cos(spearDir), sin(spearDir));
 
-			spearBox.pos = Vector2f(0, -32) + tip;
+			spearBox.pos = tip;
 		}
 	}
 
 	virtual void draw(RenderTarget *target) {
 
 		spearSprite.setRotation(90.f + spearDir * 180.f / M_PI);
-		spearSprite.setPosition(*offset + Vector2f(0,-32));
+		spearSprite.setPosition(*offset);
 		target->draw(spearSprite);
 
 		spearBox.draw(target);
@@ -92,7 +94,13 @@ public:
 		return (tip.x + tip.y <= 0);
 	}
 
-	virtual void setAction(Action a) {}
+	virtual void setAction(Action a) {
+		if (a == Action::GetHit) {
+			state = State::Hurt;
+			timer = 0;
+			gotHit = true;
+		}
+	}
 
 	virtual bool isHitCircle(CollisionBox c) {
 		return CollisionBox::check(spearBox, c);
@@ -103,6 +111,7 @@ public:
 	}
 
 	virtual float getCharacterVelocity() {
+		if (gotHit) {return approach(-300, 0, timer/0.6f);}
 		return 0;
 	}
 
@@ -112,6 +121,14 @@ public:
 	virtual void paray() {
 		state = State::Hurt;
 		timer = 0;
+		gotHit = false;
+	}
+
+	virtual bool canHurt() {
+		return (state == State::Point);
+	}
+	virtual bool canGetHurt() {
+		return !(state == State::Hurt && gotHit);
 	}
 };
 

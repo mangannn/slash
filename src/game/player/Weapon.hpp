@@ -14,7 +14,8 @@ public:
 
 	enum class Action {
 		Slash,
-		Stab
+		Stab,
+		GetHit
 	};
 
 	Weapon(Vector2f *offsetParam):
@@ -44,6 +45,9 @@ public:
 	virtual bool canParay() {return false;}
 	virtual CollisionBox getParayBox() = 0;
 	virtual void paray() = 0;
+
+	virtual bool canHurt() {return true;}
+	virtual bool canGetHurt() {return true;}
 };
 
 #endif

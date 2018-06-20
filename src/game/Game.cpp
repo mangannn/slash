@@ -117,6 +117,8 @@ void Game::update(float elapsedTime) {
 
 
 	Character *ch;
+	Character *ch1;
+	Character *ch2;
 	Orb *orb;
 
 	Vector2f temp;
@@ -143,7 +145,7 @@ void Game::update(float elapsedTime) {
 			if (CollisionBox::check(World::players->at(j)->walkBox, map->staticBoxes[i])) {
 				float coll_dist = World::players->at(j)->walkBox.r + map->staticBoxes[i].r;
 				Vector2f diff = World::players->at(j)->walkBox.getPosition() - map->staticBoxes[i].getPosition();
-				World::players->at(j)->pos += diff * (coll_dist / size(diff) - 1);
+				World::players->at(j)->pos += diff * ((coll_dist / size(diff)) - 1.f);
 			}
 		}
 		for (unsigned int j = 0; j < World::objects->size(); j++) {
@@ -152,7 +154,39 @@ void Game::update(float elapsedTime) {
 
 					float coll_dist = ch->walkBox.r + map->staticBoxes[i].r;
 					Vector2f diff = ch->walkBox.getPosition() - map->staticBoxes[i].getPosition();
-					ch->pos += diff * (coll_dist / size(diff) - 1);
+					ch->pos += diff * ((coll_dist / size(diff)) - 1.f);
+				}
+			}
+		}
+	}
+
+	// Collisions character with characters
+	for (unsigned int i = 0; i < World::objects->size(); i++) {
+		if ((ch1 = dynamic_cast<Character *>(World::objects->at(i))) != NULL) {
+			for (unsigned int j = i + 1; j < World::objects->size(); j++) {
+				if ((ch2 = dynamic_cast<Character *>(World::objects->at(j))) != NULL) {
+					if (CollisionBox::check(ch1->walkBox, ch2->walkBox)) {
+
+						float coll_dist = ch1->walkBox.r + ch2->walkBox.r;
+						Vector2f diff = ch1->walkBox.getPosition() - ch2->walkBox.getPosition();
+						ch1->pos += diff * (0.5f * ((coll_dist / size(diff)) - 1.f));
+						ch2->pos -= diff * (0.5f * ((coll_dist / size(diff)) - 1.f));
+					}
+				}
+			}
+		}
+	}
+
+	// Collisions player with characters
+	for (unsigned int j = 0; j < World::players->size(); j++) {
+		for (unsigned int i = 0; i < World::objects->size(); i++) {
+			if ((ch = dynamic_cast<Character *>(World::objects->at(i))) != NULL) {
+				if (CollisionBox::check(ch->walkBox, World::players->at(j)->walkBox)) {
+
+					float coll_dist = ch->walkBox.r + World::players->at(j)->walkBox.r;
+					Vector2f diff = ch->walkBox.getPosition() - World::players->at(j)->walkBox.getPosition();
+					ch->pos += diff * (0.5f * ((coll_dist / size(diff)) - 1.f));
+					World::players->at(j)->pos -= diff * (0.5f * ((coll_dist / size(diff)) - 1.f));
 				}
 			}
 		}
@@ -179,17 +213,20 @@ void Game::update(float elapsedTime) {
 					//std::cout << "Auuu!\n";
 				}
 			} else if ((ch = dynamic_cast<Character *>(World::objects->at(i))) != NULL) {
-				if (ch->weapon->isHitCircle(World::players->at(j)->bodyBox)) {
-					World::players->at(j)->pos = ch->pos + 1.2f*(World::players->at(j)->pos - ch->pos);
-					World::players->at(j)->hit(Vector2f(0,0));
+				
+				if (ch->weapon->canHurt() && World::players->at(j)->weapon->canGetHurt()) {
+					if (ch->weapon->isHitCircle(World::players->at(j)->bodyBox)) {
+						World::players->at(j)->hit(Vector2f(0,0));
+					}
 				}
-				if (World::players->at(j)->weapon->isHitCircle(ch->bodyBox)) {
-					ch->hit(Vector2f(0,0));
+				if (ch->weapon->canGetHurt() && World::players->at(j)->weapon->canHurt()) {
+					if (World::players->at(j)->weapon->isHitCircle(ch->bodyBox)) {
+						ch->hit(Vector2f(0,0));
+					}
 				}
 
 				if (World::players->at(j)->weapon->canParay() && World::players->at(j)->weapon->isHitCircle(ch->weapon->getParayBox())) {
 					//World::players->at(j)->sword.hit(imp->spearBox.getPosition(), 0 /*hard*/);
-					
 					World::add(new Flash(ch->weapon->getParayBox().getPosition()));
 
 					ch->weapon->paray();
@@ -300,6 +337,6 @@ void Game::draw(RenderTarget *target) {
 
 
 	// only for debug
-	//map->drawDebug(target);
+	map->drawDebug(target);
 }
 

@@ -43,6 +43,7 @@ public:
 		Idle,
 		DrawBack,
 		Pause,
+		Hurt,
 		Slash,
 		SlashBack,
 		SlashBig,
@@ -64,7 +65,7 @@ public:
 	Sword(Vector2f *offset):
 		Weapon(offset),
 		ani(offset, Vector2f(0, 0), "media/animation/Sword1/a", 16),
-		swordBox(offset, Vector2f(0, 10), 4),
+		swordBox(offset, Vector2f(0, 0), 4),
 		swordTip(0, swordLength)
 	{
 
@@ -78,7 +79,7 @@ public:
 			if (currentSwordMovement.update(elapsedTime)) {
 				if (state == State::DrawBack) {
 					setState(State::Idle);
-				} else if (state == State::Pause) {
+				} else if (state == State::Pause || state == State::Hurt) {
 					setState(State::DrawBack);
 				} else {
 					setState(State::Pause);
@@ -97,7 +98,7 @@ public:
 		ani.setFrame(discDir);
 		ani.pos = swordOri;
 
-		swordBox.pos = Vector2f(0, -32) + swordTip;
+		swordBox.pos = swordTip;
 
 		swordGraphics.update(elapsedTime, swordTip);
 
@@ -106,9 +107,9 @@ public:
 
 	virtual void draw(RenderTarget *target) {
 
-		if (state != State::Idle && state != State::DrawBack) {
+		if (state != State::Idle && state != State::DrawBack && state != State::Hurt) {
 			
-			Vector2f center = *offset + Vector2f(0, -32);
+			Vector2f center = *offset;
 
 			swordGraphics.draw(target, center, swordTip);
 			ani.draw(target);
@@ -131,29 +132,34 @@ public:
 
 		if (s == State::Pause) {
 			currentSwordMovement = WeaponMove(currentSwordMovement.reachEnd, currentSwordMovement.reachEnd, 
-											currentSwordMovement.dirEnd, currentSwordMovement.dirEnd, 0, 0.2);
+											currentSwordMovement.dirEnd, currentSwordMovement.dirEnd, 0, 0.15);
 		} else if (s == State::DrawBack) {
 			// combobreak
 			comboState = State::Idle;
 
 			currentSwordMovement = WeaponMove(0, 0, 0, 0, 0, 0.1);
-		} else {
+		} else if (s == State::Hurt) {
+			// combobreak
+			comboState = State::Idle;
+
+			currentSwordMovement = WeaponMove(0, 0, 0, 0, -300, 0.15);
+		}  else {
 
 			// start combo
 			comboState = s;
 
 			if (s == State::Slash) {
-				currentSwordMovement = WeaponMove(swordLength, swordLength, -M_PI/2.f, M_PI/2.f, 300, 0.15);
+				currentSwordMovement = WeaponMove(swordLength*1.2f, swordLength*1.2f, -M_PI/2.f, M_PI/2.f, 300, 0.15);
 			} else if (s == State::SlashBack) {
-				currentSwordMovement = WeaponMove(swordLength, swordLength, M_PI/2.f, -M_PI/2.f, 350, 0.15);
+				currentSwordMovement = WeaponMove(swordLength*1.2f, swordLength*1.2f, M_PI/2.f, -M_PI/2.f, 350, 0.15);
 			} else if (s == State::SlashBig) {
-				currentSwordMovement = WeaponMove(swordLength*1.2f, swordLength*1.3f, -M_PI/2.f, M_PI/2.f, 400, 0.25);
+				currentSwordMovement = WeaponMove(swordLength*1.4f, swordLength*1.4f, -M_PI/2.f, M_PI/2.f, 400, 0.25);
 			} else if (s == State::Stab) {
-				currentSwordMovement = WeaponMove(swordLength/4.f, swordLength*1.3f, 0, 0, 400, 0.15);
+				currentSwordMovement = WeaponMove(swordLength/4.f, swordLength*1.4f, 0, 0, 400, 0.15);
 			} else if (s == State::StabBig) {
-				currentSwordMovement = WeaponMove(swordLength/4.f, swordLength*1.7f, 0, 0, 500, 0.25);
+				currentSwordMovement = WeaponMove(swordLength/4.f, swordLength*2.f, 0, 0, 600, 0.2);
 			} else if (s == State::Swirl) {
-				currentSwordMovement = WeaponMove(swordLength*1.5f, swordLength, 0, 7.f*M_PI/4.f, 100, 0.35);
+				currentSwordMovement = WeaponMove(swordLength*1.8f, swordLength*1.2f, 0, 7.f*M_PI/4.f, 100, 0.35);
 			}
 		}
 
@@ -161,8 +167,9 @@ public:
 	}
 
 	virtual void setAction(Action a) {
-
-		if (state == State::Idle) {
+		if (a == Action::GetHit) {
+			setState(State::Hurt);
+		} else if (state == State::Idle) {
 			if (a == Action::Slash) {
 				setState(State::Slash);
 			} else if (a == Action::Stab) {
@@ -198,8 +205,8 @@ public:
 		} else {
 
 			Vector2f line_dir = swordDirectionVec;
-			Vector2f p1 = *offset + Vector2f(0, -32) + swordOri;
-			Vector2f p2 = *offset + Vector2f(0, -32) + swordTip;
+			Vector2f p1 = *offset + swordOri;
+			Vector2f p2 = *offset + swordTip;
 			float line_length = swordLength;
 
 
@@ -239,6 +246,13 @@ public:
 	}
 	virtual void paray() {
 		setState(State::DrawBack);
+	}
+
+	virtual bool canHurt() {
+		return !((state == State::Idle || state == State::DrawBack || state == State::Hurt || state == State::Pause));
+	}
+	virtual bool canGetHurt() {
+		return !(state == State::Hurt);
 	}
 };
 

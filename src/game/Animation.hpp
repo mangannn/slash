@@ -36,7 +36,7 @@ public:
 			ani[i] = Resources::getTexture(filename + str + ".png");
 		}
 		sprite.setTexture(*ani[current]);
-		sprite.setOrigin(sf::Vector2f((float)ani[current]->getSize().x / 2.0f, (float)ani[current]->getSize().y));
+		sprite.setOrigin(sf::Vector2f((float)ani[current]->getSize().x / 2.f, (float)ani[current]->getSize().y /2.f));
 	}
 
 	virtual void draw(RenderTarget *target) {

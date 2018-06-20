@@ -12,15 +12,15 @@ class Character: public Object {
 
 public:
 
-	float health;
+	float hp;
 
 	CollisionBox walkBox, bodyBox;
 
 	Weapon *weapon;
 
-	Character(Vector2f position, float healthParam):
+	Character(Vector2f position, float health):
 		Object(position),
-		health(healthParam)
+		hp(health)
 	{}
 
 	virtual ~Character() {}

@@ -82,7 +82,8 @@ public:
 		for (unsigned int i = 0; i < spawns.size(); i++) {
 			
 			std::string name = spawns.at(i).type.substr(0, spawns.at(i).type.find(":"));
-			std::string arg1 = spawns.at(i).type.substr(1, spawns.at(i).type.find(":"));
+			std::string arg1 = spawns.at(i).type.substr(spawns.at(i).type.find(":") + 1);
+
 
 			if (name == "player") {
 
@@ -107,7 +108,9 @@ public:
 				i -= 1;
 			} else if (name == "imp") {
 
-				World::addObject(new Imp(spawns.at(i).pos));
+				int type = atoi(arg1.c_str());
+
+				World::addObject(new Imp(spawns.at(i).pos, type));
 
 				spawns.erase(spawns.begin() + i);
 				i -= 1;

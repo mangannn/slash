@@ -7,11 +7,12 @@
 
 #include "../Resources.hpp"
 #include "../Functions.hpp"
+#include "../obj/graphicaleffects/Explotion.hpp"
 
 #include <math.h>
 
 Player::Player(Vector2f position, Controls *con):
-	Character(position, 1000),
+	Character(position, 20),
 	Controlled(con),
 
 	ani(&pos, Vector2f(0, 0), "media/animation/Billy/body", 8),
@@ -19,8 +20,8 @@ Player::Player(Vector2f position, Controls *con):
 
 {
 
-	walkBox = CollisionBox(&pos, Vector2f(0, -14), 8);
-	bodyBox = CollisionBox(&pos, Vector2f(0, -25), 12);
+	walkBox = CollisionBox(&pos, Vector2f(0, 18), 8);
+	bodyBox = CollisionBox(&pos, Vector2f(0, 7), 12);
 
 	weapon = new Sword(&pos);
 }
@@ -125,5 +126,15 @@ void Player::draw(RenderTarget *target) {
 
 
 void Player::hit(Vector2f direction) {
-	weapon->paray();
+
+	std::cout << "player hurt\n";
+
+	hp--;
+	weapon->setAction(Weapon::Action::GetHit);
+
+	if (hp <= 0) {
+		World::add(new Explotion(pos));
+		std::cout << "Dead\n";
+		hp = 20;
+	}
 }
