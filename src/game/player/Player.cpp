@@ -120,8 +120,8 @@ void Player::draw(RenderTarget *target) {
 		weapon->draw(target);
 	}
 
-	walkBox.draw(target);
-	bodyBox.draw(target);
+	//walkBox.draw(target);
+	//bodyBox.draw(target);
 }
 
 

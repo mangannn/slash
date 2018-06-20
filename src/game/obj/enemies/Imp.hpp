@@ -98,8 +98,8 @@ public:
 
 		weapon->draw(target);
 
-		bodyBox.draw(target);
-		walkBox.draw(target);
+		//bodyBox.draw(target);
+		//walkBox.draw(target);
 	}
 
 	virtual void hit(Vector2f direction) {

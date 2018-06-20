@@ -115,12 +115,12 @@ public:
 			ani.draw(target);
 
 
-			sf::Vertex line[] = {
+			/*sf::Vertex line[] = {
 			    sf::Vertex(center + swordOri),
 			    sf::Vertex(center + swordTip)};
-			target->draw(line, 2, sf::Lines);
+			target->draw(line, 2, sf::Lines);*/
 
-			swordBox.draw(target);
+			//swordBox.draw(target);
 		}
 	}
 

@@ -87,7 +87,7 @@ public:
 		spearSprite.setPosition(*offset);
 		target->draw(spearSprite);
 
-		spearBox.draw(target);
+		//spearBox.draw(target);
 	}
 
 	virtual bool isBehind() {
