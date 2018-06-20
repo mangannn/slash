@@ -19,6 +19,7 @@ public:
 
 	float direction = 0;
 	float velocity = 0;
+    Vector2f posStart;
 
 	Sprite sprite;
 	Animation ani, feetAnimation;

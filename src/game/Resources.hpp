@@ -8,7 +8,7 @@ namespace Resources {
 
 	sf::Texture *getTexture(const std::string filename);
 
-	void setMainFont(sf::String);
+	void setMainFont(const std::string filename);
 	sf::Font *getMainFont();
 
 }

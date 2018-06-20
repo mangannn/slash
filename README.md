@@ -18,7 +18,6 @@ It includes an editor for making maps.
 
 # Compile:
 
-- mkdir build build/game build/editor
 - make
 - make -f makefile_editor
 
@@ -27,4 +26,7 @@ It includes an editor for making maps.
 - ./game.exe
 - ./editor.exe
 
+# Compile on Windows:
 
+- make -f makefile_windows
+- make -f makefile_windows editor

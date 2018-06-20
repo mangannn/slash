@@ -23,7 +23,7 @@ sf::Texture *Resources::getTexture(const std::string filename) {
 
 static sf::Font _RESOURCES_mainFont;
 
-void Resources::setMainFont(sf::String filename){
+void Resources::setMainFont(const std::string filename){
 	_RESOURCES_mainFont.loadFromFile(filename);
 }
 

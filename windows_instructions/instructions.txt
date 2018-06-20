@@ -2,7 +2,7 @@
 # gcc
 
 - Download MinGW from mingw.org (link is at top right of the homepage)
-- Install MinGW with the downloaded file mingw-get-setup.exe (mingw32-gcc-g++)
+- Install MinGW with the downloaded file mingw-get-setup.exe (install minimum parts mingw32-base mingw32-gcc-g++)
 - Edit enviroment variables, add "C:\MinGW\bin" to "Path"
 
 - Test compile:
@@ -14,7 +14,7 @@
 
 # SFML
 
-- Go to sfml.org and download sfml for MinGW32 Windows
+- Go to www.sfml-dev.org and download sfml for MinGW32 Windows
 - Extract and move SFML-X.X to "C:\" and rename it SFML
 - Edit enviroment variables, add "C:\SFML\bin" to "Path"
 

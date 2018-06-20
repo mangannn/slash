@@ -12,9 +12,10 @@
 #include <math.h>
 
 Player::Player(Vector2f position, Controls *con):
-	Character(position, 20),
+	Character(position, 10),
 	Controlled(con),
 
+    posStart(position),
 	ani(&pos, Vector2f(0, 0), "media/animation/Billy/body", 8),
 	feetAnimation(&pos, Vector2f(0, 0), "media/animation/Billy/feet", 24)
 
@@ -107,6 +108,9 @@ void Player::draw(RenderTarget *target) {
 	shape.setOrigin(r,3*r);
 	shape.setPosition(pos);
 
+    sf::RectangleShape lifeBox(sf::Vector2f((float)hp * 2.0f, 1.0f));
+    lifeBox.setFillColor(hp > 7 ? sf::Color::Green : hp > 3 ? sf::Color::Yellow : sf::Color::Red);
+    lifeBox.setPosition(pos - sf::Vector2f((float)hp, 20.0f));
 
 	if (weapon->isBehind()) {
 		weapon->draw(target);
@@ -122,6 +126,7 @@ void Player::draw(RenderTarget *target) {
 
 	//walkBox.draw(target);
 	//bodyBox.draw(target);
+    target->draw(lifeBox);
 }
 
 
@@ -134,7 +139,8 @@ void Player::hit(Vector2f direction) {
 
 	if (hp <= 0) {
 		World::add(new Explotion(pos));
+        pos = posStart;
 		std::cout << "Dead\n";
-		hp = 20;
+		hp = 10;
 	}
 }
