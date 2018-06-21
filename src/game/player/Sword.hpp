@@ -113,16 +113,25 @@ public:
 
 			swordGraphics.draw(target, center, swordTip);
 			ani.draw(target);
-
-
-			sf::Vertex line[] = {
-			    sf::Vertex(center + swordOri),
-			    sf::Vertex(center + swordTip)};
-			target->draw(line, 2, sf::Lines);
-
-			//swordBox.draw(target);
 		}
 	}
+
+#ifdef DEBUG
+	virtual void drawDebug(RenderTarget *target) {
+
+		if (state != State::Idle && state != State::DrawBack && state != State::Hurt) {
+			
+			Vector2f center = *offset;
+
+			sf::Vertex line[] = {
+				sf::Vertex(center + swordOri),
+				sf::Vertex(center + swordTip)};
+			target->draw(line, 2, sf::Lines);
+
+			swordBox.drawDebug(target);
+		}
+	}
+#endif
 
 	virtual bool isBehind() {
 		return (swordTip.x + swordTip.y <= 0);

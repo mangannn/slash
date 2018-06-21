@@ -91,9 +91,13 @@ public:
 		sprite.setRotation(90.f + spearDir * 180.f / M_PI);
 		sprite.setPosition(*offset + ori);
 		target->draw(sprite);
-
-		//spearBox.draw(target);
 	}
+
+#ifdef DEBUG
+	virtual void drawDebug(RenderTarget *target) {
+		spearBox.drawDebug(target);
+	}
+#endif
 
 	void setState(State s) {
 

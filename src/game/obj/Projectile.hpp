@@ -41,8 +41,14 @@ public:
 		sprite.setPosition(pos);
 		target->draw(sprite);
 
-		//box.draw(target);
 	}
+
+#ifdef DEBUG
+	virtual void drawDebug(RenderTarget *target) {
+		box.drawDebug(target);
+	}
+#endif
+
 };
 
 #endif

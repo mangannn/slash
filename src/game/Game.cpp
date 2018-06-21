@@ -337,7 +337,13 @@ void Game::draw(RenderTarget *target) {
 	}
 
 
-	// only for debug
+#ifdef DEBUG
 	map->drawDebug(target);
+
+	for (unsigned int i = 0; i < sorted.size(); i++) {
+		sorted.at(i)->drawDebug(target);
+	}
+#endif
+	// only for debug
 }
 

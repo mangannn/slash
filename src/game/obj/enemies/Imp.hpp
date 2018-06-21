@@ -95,11 +95,7 @@ public:
 	virtual void draw(RenderTarget *target) {
 
 		ani.draw(target);
-
 		weapon->draw(target);
-
-		//bodyBox.draw(target);
-		//walkBox.draw(target);
 	}
 
 	virtual void hit(Vector2f dir) {

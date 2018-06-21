@@ -84,7 +84,7 @@ public:
 		sprite.setPosition(pos);
 		target->draw(sprite);
 
-		//box.draw(target);
+		//box.drawDebug(target);
 	}
 
 	virtual void kill() {

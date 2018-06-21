@@ -60,9 +60,8 @@ public:
 		}
 	}
 
-	virtual void draw(RenderTarget *target) {
-
-		// for debug
+#ifdef DEBUG
+	virtual void drawDebug(RenderTarget *target) {
 		sf::CircleShape shape(r);
 		shape.setFillColor(sf::Color(0, 0, 0, 0));
 		shape.setOutlineThickness(1);
@@ -70,6 +69,8 @@ public:
 		shape.setPosition(pos - Vector2f(r, r));
 		target->draw(shape);
 	}
+#endif
+
 };
 
 #endif

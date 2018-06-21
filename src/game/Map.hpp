@@ -60,20 +60,20 @@ public:
 		}
 	}
 
+#ifdef DEBUG
 	void drawDebug(RenderTarget *target) {
 
 		for (unsigned int i = 0; i < numStatic; i++) {
-			staticBoxes[i].draw(target);
+			staticBoxes[i].drawDebug(target);
 		}
 		for (unsigned int i = 0; i < numCollisionLines; i++) {
-			collisionLines[i].draw(target);
+			collisionLines[i].drawDebug(target);
 		}
 		for (unsigned int i = 0; i < spawns.size(); i++) {
-			spawns.at(i).draw(target);
+			spawns.at(i).drawDebug(target);
 		}
 	}
-
-
+#endif
 
 	void init(int numberPlayers) {
 

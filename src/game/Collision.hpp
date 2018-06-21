@@ -33,7 +33,8 @@ public:
 		return false;
 	}
 
-	void draw(RenderTarget *target) {
+#ifdef DEBUG
+	void drawDebug(RenderTarget *target) {
 
 		// for debug
 		sf::CircleShape shape(r);
@@ -43,6 +44,7 @@ public:
 		shape.setPosition(getPosition() - Vector2f(r, r));
 		target->draw(shape);
 	}
+#endif
 
 	Vector2f getPosition() {
 		return (*offset) + pos;
@@ -111,7 +113,8 @@ public:
 		return Vector2f(0, 0);
 	}
 
-	void draw(RenderTarget *target) {
+#ifdef DEBUG
+	void drawDebug(RenderTarget *target) {
 
 
 		Vector2f d = 10.f * Vector2f(line_dir.y, -line_dir.x);
@@ -131,6 +134,8 @@ public:
 
 		target->draw(line, 8, sf::Lines);
 	}
+#endif
+
 };
 
 #endif

@@ -30,6 +30,10 @@ public:
 
 	virtual void draw(RenderTarget *target) = 0;
 
+#ifdef DEBUG
+	virtual void drawDebug(RenderTarget *target) {}
+#endif
+
 	virtual bool isBehind() = 0;
 
 	virtual void setAction(Action a) = 0;

@@ -15,7 +15,7 @@ Player::Player(Vector2f position, Controls *con):
 	Character(position, 10),
 	Controlled(con),
 
-    posStart(position),
+	posStart(position),
 	ani(&pos, Vector2f(0, 0), "media/animation/Billy/body", 8),
 	feetAnimation(&pos, Vector2f(0, 0), "media/animation/Billy/feet", 24)
 
@@ -102,31 +102,21 @@ void Player::update(float elapsedTime) {
 
 void Player::draw(RenderTarget *target) {
 
-	float r = 15;
-	sf::CircleShape shape(r);
-	shape.setFillColor(sf::Color::Red);
-	shape.setOrigin(r,3*r);
-	shape.setPosition(pos);
-
-    sf::RectangleShape lifeBox(sf::Vector2f((float)hp * 2.0f, 1.0f));
-    lifeBox.setFillColor(hp > 7 ? sf::Color::Green : hp > 3 ? sf::Color::Yellow : sf::Color::Red);
-    lifeBox.setPosition(pos - sf::Vector2f((float)hp, 20.0f));
+	sf::RectangleShape lifeBox(sf::Vector2f((float)hp * 2.0f, 1.0f));
+	lifeBox.setFillColor(hp > 7 ? sf::Color::Green : hp > 3 ? sf::Color::Yellow : sf::Color::Red);
+	lifeBox.setPosition(pos - sf::Vector2f((float)hp, 20.0f));
 
 	if (weapon->isBehind()) {
 		weapon->draw(target);
 		ani.draw(target);
 		feetAnimation.draw(target);
-		//target->draw(shape);
 	} else {
 		ani.draw(target);
 		feetAnimation.draw(target);
-		//target->draw(shape);
 		weapon->draw(target);
 	}
 
-	//walkBox.draw(target);
-	//bodyBox.draw(target);
-    target->draw(lifeBox);
+	target->draw(lifeBox);
 }
 
 
@@ -141,7 +131,7 @@ void Player::hit(Vector2f dir) {
 
 	if (hp <= 0) {
 		World::add(new Explotion(pos));
-        pos = posStart;
+		pos = posStart;
 		std::cout << "Dead\n";
 		hp = 10;
 	}

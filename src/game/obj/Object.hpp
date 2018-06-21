@@ -18,7 +18,12 @@ public:
 
 	virtual void update(float elapsedTime) {}
 
-	virtual void draw(RenderTarget *window) {}
+	virtual void draw(RenderTarget *target) {}
+
+#ifdef DEBUG
+	virtual void drawDebug(RenderTarget *target) {}
+#endif
+
 };
 
 #endif

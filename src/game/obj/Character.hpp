@@ -27,6 +27,16 @@ public:
 
 	virtual void hit(Vector2f direction) = 0;
 	
+#ifdef DEBUG
+	virtual void drawDebug(RenderTarget *target) {
+
+		bodyBox.drawDebug(target);
+		walkBox.drawDebug(target);
+
+		weapon->drawDebug(target);
+	}
+#endif
+	
 };
 
 #endif
