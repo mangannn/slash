@@ -194,6 +194,7 @@ void Game::update(float elapsedTime) {
 
 
 
+	Vector2f tempVector;
 
 
 	for (unsigned int j = 0; j < World::players->size(); j++) {
@@ -201,13 +202,12 @@ void Game::update(float elapsedTime) {
 		for (unsigned int i = 0; i < World::objects->size(); i++) {
 
 			if ((orb = dynamic_cast<Orb *>(World::objects->at(i))) != NULL) {
-				if (World::players->at(j)->weapon->isHitCircle(orb->box)) {
+				if (World::players->at(j)->weapon->canParry() && World::players->at(j)->weapon->isHitCircle(orb->box, &tempVector)) {
 
-					Vector2f diff = World::players->at(j)->pos - orb->pos;
-					orb->vel = orb->vel - 2 * (dot(orb->vel, diff) / sqrSize(diff)) * diff;
+					orb->vel += tempVector * 10.f;
 
 					World::add(new Flash(orb->pos));
-					World::players->at(j)->weapon->paray();
+					World::players->at(j)->weapon->getParried(-tempVector);
 
 				} else if (CollisionBox::check(World::players->at(j)->bodyBox, orb->box)) {
 					//std::cout << "Auuu!\n";
@@ -215,21 +215,22 @@ void Game::update(float elapsedTime) {
 			} else if ((ch = dynamic_cast<Character *>(World::objects->at(i))) != NULL) {
 				
 				if (ch->weapon->canHurt() && World::players->at(j)->weapon->canGetHurt()) {
-					if (ch->weapon->isHitCircle(World::players->at(j)->bodyBox)) {
-						World::players->at(j)->hit(Vector2f(0,0));
+					if (ch->weapon->isHitCircle(World::players->at(j)->bodyBox, &tempVector)) {
+						World::players->at(j)->hit(tempVector);
 					}
 				}
 				if (ch->weapon->canGetHurt() && World::players->at(j)->weapon->canHurt()) {
-					if (World::players->at(j)->weapon->isHitCircle(ch->bodyBox)) {
-						ch->hit(Vector2f(0,0));
+					if (World::players->at(j)->weapon->isHitCircle(ch->bodyBox, &tempVector)) {
+						ch->hit(tempVector);
 					}
 				}
 
-				if (World::players->at(j)->weapon->canParay() && World::players->at(j)->weapon->isHitCircle(ch->weapon->getParayBox())) {
-					//World::players->at(j)->sword.hit(imp->spearBox.getPosition(), 0 /*hard*/);
-					World::add(new Flash(ch->weapon->getParayBox().getPosition()));
+				if (World::players->at(j)->weapon->canParry() && ch->weapon->canBeParried()) {
+					if (World::players->at(j)->weapon->isHitCircle(ch->weapon->getParryBox(), &tempVector)) {
+						World::add(new Flash(ch->weapon->getParryBox().getPosition()));
 
-					ch->weapon->paray();
+						ch->weapon->getParried(tempVector);
+					}
 				}
 			}
 		}

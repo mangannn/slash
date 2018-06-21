@@ -102,7 +102,9 @@ public:
 		//walkBox.draw(target);
 	}
 
-	virtual void hit(Vector2f direction) {
+	virtual void hit(Vector2f dir) {
+
+		direction = atan2(-dir.y, -dir.x);
 
 		std::cout << "imp hurt\n";
 

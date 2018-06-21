@@ -21,6 +21,14 @@ float size(sf::Vector2f v) {
 float sqrSize(sf::Vector2f v) {
 	return (v.x * v.x) + (v.y * v.y);
 }
+Vector2f normalize(Vector2f v) {
+	float s2 = sqrSize(v);
+	if (s2 > 0.f) {
+		return v / sqrt(s2);
+	} else {
+		return Vector2f(0,0);
+	}
+}
 
 float dot(sf::Vector2f a, sf::Vector2f b) {
 	return (a.x * b.x) + (a.y * b.y);

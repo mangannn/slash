@@ -130,7 +130,9 @@ void Player::draw(RenderTarget *target) {
 }
 
 
-void Player::hit(Vector2f direction) {
+void Player::hit(Vector2f dir) {
+
+	direction = atan2(-dir.y, -dir.x);
 
 	std::cout << "player hurt\n";
 

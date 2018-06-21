@@ -36,7 +36,7 @@ public:
 	const float swordLength = 32;
 
 
-	WeaponMove currentSwordMovement = WeaponMove(0,0,0,0,0,100);
+	WeaponMove currentSwordMovement = WeaponMove(0,0,0,0,0,1);
 
 
 	enum class State {
@@ -115,10 +115,10 @@ public:
 			ani.draw(target);
 
 
-			/*sf::Vertex line[] = {
+			sf::Vertex line[] = {
 			    sf::Vertex(center + swordOri),
 			    sf::Vertex(center + swordTip)};
-			target->draw(line, 2, sf::Lines);*/
+			target->draw(line, 2, sf::Lines);
 
 			//swordBox.draw(target);
 		}
@@ -143,17 +143,17 @@ public:
 			comboState = State::Idle;
 
 			currentSwordMovement = WeaponMove(0, 0, 0, 0, -300, 0.15);
-		}  else {
+		} else {
 
 			// start combo
 			comboState = s;
 
 			if (s == State::Slash) {
-				currentSwordMovement = WeaponMove(swordLength*1.2f, swordLength*1.2f, -M_PI/2.f, M_PI/2.f, 300, 0.15);
+				currentSwordMovement = WeaponMove(swordLength*1.2f, swordLength*1.2f, -M_PI_2, M_PI_2, 300, 0.15);
 			} else if (s == State::SlashBack) {
-				currentSwordMovement = WeaponMove(swordLength*1.2f, swordLength*1.2f, M_PI/2.f, -M_PI/2.f, 350, 0.15);
+				currentSwordMovement = WeaponMove(swordLength*1.2f, swordLength*1.2f, M_PI_2, -M_PI_2, 350, 0.15);
 			} else if (s == State::SlashBig) {
-				currentSwordMovement = WeaponMove(swordLength*1.4f, swordLength*1.4f, -M_PI/2.f, M_PI/2.f, 400, 0.25);
+				currentSwordMovement = WeaponMove(swordLength*1.4f, swordLength*1.4f, -M_PI_2, M_PI_2, 400, 0.25);
 			} else if (s == State::Stab) {
 				currentSwordMovement = WeaponMove(swordLength/4.f, swordLength*1.4f, 0, 0, 400, 0.15);
 			} else if (s == State::StabBig) {
@@ -196,11 +196,12 @@ public:
 		}
 	}
 
-	virtual bool isHitCircle(CollisionBox c) {
+	virtual bool isHitCircle(CollisionBox c, Vector2f *returnDriVec) {
 		if (state == State::Idle || state == State::DrawBack) {
 			return false;
 		} else if (state == State::Stab || state == State::StabBig) {
 			// check collision with box
+			*returnDriVec = swordDirectionVec;
 			return CollisionBox::check(swordBox, c);
 		} else {
 
@@ -217,11 +218,15 @@ public:
 					if (along_line < line_length + c.r) {
 						// maybe collide with p2
 						Vector2f collision_vec = c.getPosition() - p2;
+						if (state == State::SlashBack) {*returnDriVec = Vector2f(swordDirectionVec.y, -swordDirectionVec.x);}
+						else {*returnDriVec = Vector2f(-swordDirectionVec.y, swordDirectionVec.x);}
 						return (size(collision_vec) < c.r);
 					}
 				} else {
 					// maybe collide with line
 					Vector2f collision_vec = c.getPosition() - ((along_line * line_dir) + p1);
+					if (state == State::SlashBack) {*returnDriVec = Vector2f(swordDirectionVec.y, -swordDirectionVec.x);}
+					else {*returnDriVec = Vector2f(-swordDirectionVec.y, swordDirectionVec.x);}
 					return (size(collision_vec) < c.r);
 				}
 			}
@@ -238,13 +243,13 @@ public:
 		return currentSwordMovement.getVelocity();
 	}
 
-	virtual bool canParay() {
+	virtual bool canParry() {
 		return (state == State::Slash || state == State::SlashBack || state == State::SlashBig || state == State::Swirl);
 	}
-	virtual CollisionBox getParayBox() {
+	virtual CollisionBox getParryBox() {
 		return swordBox;
 	}
-	virtual void paray() {
+	virtual void getParried(Vector2f dirVec) {
 		setState(State::DrawBack);
 	}
 

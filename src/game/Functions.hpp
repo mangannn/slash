@@ -11,8 +11,10 @@ float frac(float x);
 bool isZero(sf::Vector2f v);
 float size(sf::Vector2f v);
 float sqrSize(sf::Vector2f v);
+Vector2f normalize(sf::Vector2f v);
 
 float dot(sf::Vector2f a, sf::Vector2f b);
+float semiCross(sf::Vector2f a, sf::Vector2f b);
 
 float angle(sf::Vector2f v);
 

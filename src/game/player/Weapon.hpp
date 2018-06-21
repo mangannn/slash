@@ -34,7 +34,7 @@ public:
 
 	virtual void setAction(Action a) = 0;
 
-	virtual bool isHitCircle(CollisionBox c) = 0;
+	virtual bool isHitCircle(CollisionBox c, Vector2f *returnDirVec) = 0;
 
 	virtual bool isBusy() {
 		return false;
@@ -42,9 +42,10 @@ public:
 
 	virtual float getCharacterVelocity() = 0;
 
-	virtual bool canParay() {return false;}
-	virtual CollisionBox getParayBox() = 0;
-	virtual void paray() = 0;
+	virtual bool canParry() {return false;}
+	virtual bool canBeParried() {return false;}
+	virtual CollisionBox getParryBox() = 0;
+	virtual void getParried(Vector2f dirVec) = 0;
 
 	virtual bool canHurt() {return true;}
 	virtual bool canGetHurt() {return true;}

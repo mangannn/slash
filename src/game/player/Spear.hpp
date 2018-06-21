@@ -23,24 +23,31 @@ class Spear: public Weapon {
 
 public:
 
-	Sprite spearSprite;
+	Sprite sprite;
 
 	CollisionBox spearBox;
 
 	enum class State {
 		Point,
-		Hurt
+		DrawBack,
+		Hurt,
+		ParriedLeft,
+		ParriedRight,
+		Poke
 	};
 
 	State state = State::Point;
 
-	bool gotHit = false;
-
 	float spearDir = 0;
+	Vector2f spearDirVec;
 
-	float timer = 0;
+	float spearDirVel = 0;
 
-	Vector2f tip;
+	Vector2f tip, ori;
+
+	const float weaponLength = 56.f;
+
+	WeaponMove currentMove = WeaponMove(0,0,0,0,0,1);
 
 	Spear(Vector2f *offset):
 		Weapon(offset),
@@ -49,45 +56,62 @@ public:
 	{
 
 		Texture *texture = Resources::getTexture("media/images/weapons/spear.png");
-		spearSprite.setTexture(*texture);
-		spearSprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y / 2.0f));
+		sprite.setTexture(*texture);
+		sprite.setOrigin(sf::Vector2f((float)texture->getSize().x / 2.0f, (float)texture->getSize().y / 2.0f));
+
+		setState(State::Point);
 	}
 
 	virtual ~Spear() {}
 	
 	virtual void update(float elapsedTime, float characterDirection) {
 
-		timer += elapsedTime;
-
-		if (state == State::Hurt) {
-			const float a = 0.3f;
-
-			spearBox.pos = Vector2f(0, 0);
-			if (timer < a) {
-				spearDir = characterDirection + approach(0, M_PI_2, timer/a);
-			} else {
-				spearDir = characterDirection + approach(M_PI_2, 0, (timer-a)/a);
-				if (timer > 2.f*a) {
-					state = State::Point;
+		if (state != State::Point) {
+			if (currentMove.update(elapsedTime)) {
+				if (state == State::DrawBack) {
+					setState(State::Point);
+				} else {
+					setState(State::DrawBack);
 				}
 			}
-		} else if (state == State::Point) {
-
-			spearDir = characterDirection;
-
-			tip = 56.f * Vector2f(cos(spearDir), sin(spearDir));
-
-			spearBox.pos = tip;
 		}
+
+		spearDir = currentMove.getDirection() + characterDirection;
+		spearDirVec = Vector2f(cos(spearDir), sin(spearDir));
+
+		float dist = currentMove.getLength();
+		tip = dist * spearDirVec;
+		ori = (dist - weaponLength) * spearDirVec;
+
+		spearBox.pos = tip;
 	}
 
 	virtual void draw(RenderTarget *target) {
 
-		spearSprite.setRotation(90.f + spearDir * 180.f / M_PI);
-		spearSprite.setPosition(*offset);
-		target->draw(spearSprite);
+		sprite.setRotation(90.f + spearDir * 180.f / M_PI);
+		sprite.setPosition(*offset + ori);
+		target->draw(sprite);
 
 		//spearBox.draw(target);
+	}
+
+	void setState(State s) {
+
+		if (s == State::DrawBack) {
+			currentMove = WeaponMove(currentMove.reachEnd, weaponLength, currentMove.dirEnd, 0, 0, 0.2);
+		} else if (s == State::Hurt) {
+			currentMove = WeaponMove(weaponLength, weaponLength*0.7f, 0, M_PI_2, -300, 0.4);
+		} else if (s == State::ParriedRight) {
+			currentMove = WeaponMove(weaponLength, weaponLength*1.2f, 0, M_PI_2, -100, 0.4);
+		} else if (s == State::ParriedLeft) {
+			currentMove = WeaponMove(weaponLength, weaponLength*1.2f, 0, -M_PI_2, -100, 0.4);
+		} else if (s == State::Poke) {
+			currentMove = WeaponMove(weaponLength*0.8, weaponLength*1.4f, 0, 0, 0, 0.2);
+		} else if (s == State::Point) {
+			currentMove = WeaponMove(weaponLength, weaponLength, 0, 0, 0, 1);
+		}
+
+		state = s;
 	}
 
 	virtual bool isBehind() {
@@ -96,13 +120,16 @@ public:
 
 	virtual void setAction(Action a) {
 		if (a == Action::GetHit) {
-			state = State::Hurt;
-			timer = 0;
-			gotHit = true;
+			setState(State::Hurt);
+		} else {
+			if (state == State::Point) {
+				setState(State::Poke);
+			}
 		}
 	}
 
-	virtual bool isHitCircle(CollisionBox c) {
+	virtual bool isHitCircle(CollisionBox c, Vector2f *returnDirVec) {
+		*returnDirVec = spearDirVec;
 		return CollisionBox::check(spearBox, c);
 	}
 
@@ -111,24 +138,30 @@ public:
 	}
 
 	virtual float getCharacterVelocity() {
-		if (gotHit) {return approach(-300, 0, timer/0.6f);}
-		return 0;
+		return currentMove.getVelocity();
 	}
 
-	virtual CollisionBox getParayBox() {
+	virtual bool canBeParried() {
+		return !(state == State::Hurt || state == State::ParriedRight || state == State::ParriedLeft);
+	}
+	virtual CollisionBox getParryBox() {
 		return spearBox;
 	}
-	virtual void paray() {
-		state = State::Hurt;
-		timer = 0;
-		gotHit = false;
+	virtual void getParried(Vector2f dirVec) {
+		std::printf("getParried\n");
+
+		if (semiCross(dirVec, spearDirVec) < 0) {
+			setState(State::ParriedRight);
+		} else {
+			setState(State::ParriedLeft);
+		}
 	}
 
 	virtual bool canHurt() {
 		return (state == State::Point);
 	}
 	virtual bool canGetHurt() {
-		return !(state == State::Hurt && gotHit);
+		return (state != State::Hurt);
 	}
 };
 
