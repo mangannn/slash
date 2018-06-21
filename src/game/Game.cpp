@@ -8,6 +8,9 @@
 
 #include "Game.hpp"
 
+#include "obj/projectiles/Orb.hpp"
+#include "obj/graphicaleffects/Flash.hpp"
+
 #include "obj/Object.hpp"
 #include "player/Player.hpp"
 #include "Map.hpp"
@@ -31,11 +34,10 @@ Game::Game() {
 
 	World::players = new std::vector<Player *>();
 	World::objects = new std::vector<Object *>();
+	World::spawns = new std::vector<Spawn *>();
 
 
 	map = new Map();
-
-	map->init(1 /* one player */);
 
 	gameView.setSize(Vector2f(1000, 1000));
 	gameView.setCenter(Vector2f(0,0));;
@@ -61,6 +63,15 @@ Game::~Game() {
 			World::players->pop_back();
 		}
 		delete World::players;
+	}
+	{
+		Object *temp;
+		while (!World::spawns->empty()) {
+			temp = World::spawns->back();
+			delete temp;
+			World::spawns->pop_back();
+		}
+		delete World::spawns;
 	}
 }
 
@@ -94,8 +105,8 @@ void Game::eventHandle(sf::Event event) {
 void Game::update(float elapsedTime) {
 
 
-	for (unsigned int i = 0; i < map->spawns.size(); i++) {
-		map->spawns.at(i).update(elapsedTime);
+	for (unsigned int i = 0; i < World::spawns->size(); i++) {
+		World::spawns->at(i)->update(elapsedTime);
 	}
 
 	for (unsigned int i = 0; i < World::objects->size(); i++) {

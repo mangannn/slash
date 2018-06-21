@@ -12,19 +12,16 @@ namespace World {
 	extern std::vector<Object *> *objects;
 	extern std::vector<Player *> *players;
 
-	//std::vector<Spawn *> *spawns;
-
-	extern std::vector<Object *> objectsToRemove;
-
-
-	void add(Object *o);
-
-	void remove(Object *o);
+	extern std::vector<Spawn *> *spawns;
 
 	void update();
 
+	void add(Object *o);
 	void addPlayer(Player *p);
-	void addObject(Object *o);
+	void addSpawn(Spawn *o);
+
+	void remove(Object *o);
+	void removeSpawn(Spawn *o);
 };
 
 #endif

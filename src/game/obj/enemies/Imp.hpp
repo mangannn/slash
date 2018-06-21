@@ -9,6 +9,7 @@
 
 #include "../../World.hpp"
 
+#include "../../player/Player.hpp"
 #include "../../player/Spear.hpp"
 #include "../../player/Sword.hpp"
 

@@ -121,14 +121,14 @@ public:
 		sf::Vertex line[] =
 		{
 
-		    sf::Vertex(p1),
-		    sf::Vertex(p2),
-		    sf::Vertex(p1),
+			sf::Vertex(p1),
+			sf::Vertex(p2),
+			sf::Vertex(p1),
 			sf::Vertex(p1+d),
-		    sf::Vertex(0.5f*(p1+p2)),
+			sf::Vertex(0.5f*(p1+p2)),
 			sf::Vertex((0.5f*(p1+p2))+(0.5f*d)),
-		    sf::Vertex(p2),
-		    sf::Vertex(p2+d)
+			sf::Vertex(p2),
+			sf::Vertex(p2+d)
 		};
 
 		target->draw(line, 8, sf::Lines);
@@ -140,22 +140,19 @@ class Spawn {
 public:
 
 	Vector2f pos;
-
 	std::string type;
 
-	float r;
-
 	Spawn() {}
-	Spawn(Vector2f position, std::string typeParam, float radius):
+	Spawn(Vector2f position, std::string typeParam):
 		pos(position),
-		type(typeParam),
-		r(radius)
+		type(typeParam)
 	{
 	}
 
 	void draw(RenderTarget *target) {
 
-		// for debug
+		const float r = 20.f;
+
 		sf::CircleShape shape(r);
 		shape.setFillColor(sf::Color(0, 0, 0, 0));
 		shape.setOutlineThickness(1);
@@ -200,10 +197,10 @@ public:
 
 		sf::Vertex line[] =
 		{
-		    sf::Vertex(pos + r * Vector2f(sin(dir), -cos(dir)), c),
-		    sf::Vertex(pos + r* Vector2f(-sin(dir), cos(dir)), c),
-		    sf::Vertex(pos),
-		    sf::Vertex(pos + r * Vector2f(cos(dir), sin(dir)), c),
+			sf::Vertex(pos + r * Vector2f(sin(dir), -cos(dir)), c),
+			sf::Vertex(pos + r* Vector2f(-sin(dir), cos(dir)), c),
+			sf::Vertex(pos),
+			sf::Vertex(pos + r * Vector2f(cos(dir), sin(dir)), c),
 		};
 
 		target->draw(line, 4, sf::Lines);
@@ -292,7 +289,7 @@ public:
 			collisionLines.push_back(CollisionBoxLine(Vector2f(0,0), Vector2f(100,0)));
 		}
 		if (spawns.size() < 1) {
-			spawns.push_back(Spawn(Vector2f(0,0), "null", 20));
+			spawns.push_back(Spawn(Vector2f(0,0), "null"));
 		}
 		if (loads.size() < 1) {
 			loads.push_back(LoadEntity(Vector2f(0,0), 500, 0, "null"));
@@ -396,7 +393,7 @@ public:
 									bgs.push_back(Background(coord, bgs.at(selected).filename));
 									selected = bgs.size() - 1;
 								} else if (state == EditorState::Spawn) {
-									spawns.push_back(Spawn(coord, spawns.at(selected).type, spawns.at(selected).r));
+									spawns.push_back(Spawn(coord, spawns.at(selected).type));
 									selected = spawns.size() - 1;
 								} else if (state == EditorState::LoadEntity) {
 									loads.push_back(LoadEntity(coord, loads.at(selected).r, loads.at(selected).dir, loads.at(selected).map));
@@ -547,7 +544,7 @@ public:
 							} else if (state == EditorState::Background) {
 								bgs.at(selected) = Background(bgs.at(selected).pos, typeText.getString());
 							} else if (state == EditorState::Spawn) {
-								spawns.at(selected) = Spawn(spawns.at(selected).pos, typeText.getString(), spawns.at(selected).r);
+								spawns.at(selected) = Spawn(spawns.at(selected).pos, typeText.getString());
 							} else if (state == EditorState::LoadEntity) {
 								loads.at(selected) = LoadEntity(loads.at(selected).pos, loads.at(selected).r, loads.at(selected).dir, typeText.getString());
 							}
@@ -847,7 +844,7 @@ public:
 			collisionLines.push_back(CollisionBoxLine(Vector2f(0,0), Vector2f(100,0)));
 		}
 		if (spawns.size() < 1) {
-			spawns.push_back(Spawn(Vector2f(0,0), "null", 20));
+			spawns.push_back(Spawn(Vector2f(0,0), "null"));
 		}
 		if (loads.size() < 1) {
 			loads.push_back(LoadEntity(Vector2f(0,0), 500, 0, "null"));
@@ -937,15 +934,14 @@ public:
 			} else if (strcmp(str1, "spawn") == 0) {
 
 				num_back = sscanf(str2, 
-					"%[^,\n],%f,%f,%f", 
-					str1, &x, &y, &r);
+					"%[^,\n],%f,%f", 
+					str1, &x, &y);
 
-				if (num_back != 4) {
+				if (num_back != 3) {
 					continue;
 				}
 
-
-				spawns.push_back(Spawn(Vector2f(x, y), str1, r));
+				spawns.push_back(Spawn(Vector2f(x, y), str1));
 			} else if (strcmp(str1, "load") == 0) {
 
 				num_back = sscanf(str2, 
@@ -986,8 +982,8 @@ public:
 		for (unsigned int i = 0; i < spawns.size(); i++) {
 
 			if (fprintf(file, 
-				"spawn{%s, %f, %f, %f}\n", 
-				spawns.at(i).type.c_str(), spawns.at(i).pos.x, spawns.at(i).pos.y, spawns.at(i).r) < 1) {
+				"spawn{%s, %f, %f}\n", 
+				spawns.at(i).type.c_str(), spawns.at(i).pos.x, spawns.at(i).pos.y) < 1) {
 
 				std::cout << "Error writeing to file: " << path << std::endl;
 				exit(-1);

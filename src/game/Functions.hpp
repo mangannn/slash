@@ -4,6 +4,8 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <iostream>
+
 using namespace sf;
 
 float frac(float x);

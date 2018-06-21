@@ -2,6 +2,7 @@
 #define _Projectile_H_
 
 #include "Object.hpp"
+#include "../Collision.hpp"
 #include "../Functions.hpp"
 #include "../Resources.hpp"
 

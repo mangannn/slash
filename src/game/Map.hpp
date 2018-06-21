@@ -3,8 +3,9 @@
 
 #include "Functions.hpp"
 #include "obj/Image.hpp"
+
+#include "World.hpp"
 #include "obj/Spawn.hpp"
-#include "obj/enemies/Imp.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -30,8 +31,6 @@ public:
 
 	unsigned int numImages = 0;
 	cs::Image images[1000];
-
-	std::vector<Spawn> spawns;
 	
 
 	Map() {
@@ -74,50 +73,6 @@ public:
 		}
 	}
 #endif
-
-	void init(int numberPlayers) {
-
-		int playerNum = 0;
-
-		for (unsigned int i = 0; i < spawns.size(); i++) {
-			
-			std::string name = spawns.at(i).type.substr(0, spawns.at(i).type.find(":"));
-			std::string arg1 = spawns.at(i).type.substr(spawns.at(i).type.find(":") + 1);
-
-
-			if (name == "player") {
-
-				if (playerNum < numberPlayers) {
-					int actionButton[3] = {sf::Keyboard::Z, sf::Keyboard::X, sf::Keyboard::Space};
-					Controls *con = new KeyboardControls(sf::Keyboard::Up, sf::Keyboard::Down, sf::Keyboard::Left, sf::Keyboard::Right, actionButton, 2);
-					World::addPlayer(new Player(spawns.at(i).pos, con));
-				}
-
-				playerNum += 1;
-
-				spawns.erase(spawns.begin() + i);
-				i -= 1;
-			} else if (name == "playerdummy") {
-
-				Controls *con = new DummyControls(atoi(arg1.c_str()));
-				World::addPlayer(new Player(spawns.at(i).pos, con));
-
-				playerNum += 1;
-				
-				spawns.erase(spawns.begin() + i);
-				i -= 1;
-			} else if (name == "imp") {
-
-				int type = atoi(arg1.c_str());
-
-				World::addObject(new Imp(spawns.at(i).pos, type));
-
-				spawns.erase(spawns.begin() + i);
-				i -= 1;
-			}
-		}
-	}
-
 
 
 private:
@@ -211,15 +166,15 @@ private:
 			} else if (strcmp(str1, "spawn") == 0) {
 
 				num_back = sscanf(str2, 
-					"%[^,\n],%f,%f,%f", 
-					str1, &x, &y, &r);
+					"%[^,\n],%f,%f", 
+					str1, &x, &y);
 
-				if (num_back != 4) {
+				if (num_back != 3) {
 					continue;
 				}
 
 
-				spawns.push_back(Spawn(Vector2f(x, y), str1, r));
+				World::addSpawn(new Spawn(Vector2f(x, y), str1));
 			}
 		}
 		fclose(file);
