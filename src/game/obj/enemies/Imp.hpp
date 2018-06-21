@@ -26,6 +26,7 @@ public:
 	float direction = 0;
 
 	float timer = 0;
+	float nextTime = 10.f;
 
 	Imp(Vector2f position, int type):
 		Character(position, 10),
@@ -65,26 +66,29 @@ public:
 
 			const float velocityAmount = 60.f;
 
-			if (distToFocus > 500) {
+			if (distToFocus > 300) {
 				velocity = 0;
 			} else if (distToFocus > 100) {
 				velocity = velocityAmount;
 			} else if (distToFocus < 80) {
 				velocity = -velocityAmount * 0.5f;
+
+				if (timer > nextTime) {
+					timer = 0;
+					nextTime = 4 + (rand() % 10);
+					weapon->setAction(Weapon::Action::Slash);
+				}
 			} else {
 				velocity = 0;
+
+				if (timer > nextTime) {
+					timer = 0;
+					nextTime = 4 + (rand() % 10);
+					weapon->setAction(Weapon::Action::Stab);
+				}
 			}
 
 			ani.setFrame(discreteDirectionFromAngle(direction, 8));
-
-			if (timer > 5.f) {
-				timer -= 5.f;
-				if (rand() % 2) {
-					weapon->setAction(Weapon::Action::Stab);
-				} else {
-					weapon->setAction(Weapon::Action::Slash);
-				}
-			}
 		}
 
 		pos += (velocity * elapsedTime) * Vector2f(cos(direction), sin(direction));

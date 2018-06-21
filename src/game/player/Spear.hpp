@@ -104,7 +104,7 @@ public:
 		if (s == State::DrawBack) {
 			currentMove = WeaponMove(currentMove.reachEnd, weaponLength, currentMove.dirEnd, 0, 0, 0.2);
 		} else if (s == State::Hurt) {
-			currentMove = WeaponMove(weaponLength, weaponLength*0.7f, 0, M_PI_2, -300, 0.4);
+			currentMove = WeaponMove(weaponLength, weaponLength*0.7f, 0, M_PI_2, -200, 0.3);
 		} else if (s == State::ParriedRight) {
 			currentMove = WeaponMove(weaponLength, weaponLength*1.2f, 0, M_PI_2, -100, 0.4);
 		} else if (s == State::ParriedLeft) {
