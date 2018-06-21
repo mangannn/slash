@@ -1,46 +1,53 @@
-bg{media/images/brown.png, -140.945450, 38.822464}
-bg{media/images/brown.png, 159.983429, 39.945332}
-bg{media/images/brown.png, 12.887596, -119.502090}
-bg{media/images/brown.png, 5.027493, 174.689606}
-bg{media/images/brown.png, -92.067764, 142.839874}
-bg{media/images/brown.png, -95.258087, -86.863815}
-bg{media/images/brown.png, 97.756721, 139.649551}
-bg{media/images/brown.png, 100.947121, -75.697647}
-spawn{player:1, -83.978821, 118.924309, 20.000000}
-spawn{player:0, 6.860352, 118.113258, 20.000000}
-spawn{player:2, 96.888428, 114.057922, 20.000000}
-spawn{frog:1, -5.305603, -106.551460, 20.000000}
-box{-346.774200, 169.354843, 81.790695}
-line{306.429901, -116.389725, 296.537659, 217.473022}
-line{334.681519, 58.762718, 151.276337, 326.686493}
-line{121.694847, 383.313965, -265.400085, 234.561295}
-line{-142.641434, 340.603638, -347.941040, -23.069822}
-line{-323.500580, 102.065132, -181.746155, -287.026428}
-line{-257.022644, -201.973724, 125.225632, -295.824951}
-line{7.911545, -289.959229, 280.666687, -153.092880}
-line{187.096741, -245.161285, 321.726624, 19.945312}
-line{248.472626, 231.180573, -54.103748, 357.113159}
-img{media/images/gran.png, 115.864098, -384.101990}
-img{media/images/gran.png, -81.410393, -306.541077}
-img{media/images/gran.png, 203.541672, -289.680023}
-img{media/images/gran.png, -221.357300, -259.330078}
-img{media/images/gran.png, -362.990265, -210.432983}
-img{media/images/gran.png, 326.627472, -200.316315}
-img{media/images/gran.png, 451.399445, -146.360916}
-img{media/images/gran.png, 360.349670, -80.602737}
-img{media/images/gran.png, -324.209808, -4.727928}
-img{media/images/gran.png, 387.327362, 22.249786}
-img{media/images/gran.png, 589.660156, 28.994240}
-img{media/images/gran.png, -460.784515, 47.541397}
-img{media/images/gran.png, 390.699585, 148.707825}
-img{media/images/gran.png, -393.340210, 172.313293}
-img{media/images/gran.png, 333.371918, 238.071472}
-img{media/images/gran.png, -282.057129, 275.165833}
-img{media/images/gran.png, 449.713287, 319.004639}
-img{media/images/gran.png, 110.805824, 352.726746}
-img{media/images/gran.png, -248.334991, 357.785065}
-img{media/images/gran.png, 225.461075, 404.996094}
-img{media/images/gran.png, -52.746601, 452.207092}
-img{media/images/gran.png, -376.479156, 460.637634}
-img{media/images/gran.png, -138.738052, 480.870880}
-img{media/images/gran.png, 50.105949, 556.745728}
+bg{media/images/brown.png, 50.573051, 31.199547}
+bg{media/images/brown.png, -17.767879, 67.505722}
+bg{media/images/brown.png, -56.209675, 5.571717}
+bg{media/images/brown.png, 16.402561, -41.412678}
+bg{media/images/rock.png, -35.026657, 30.812376}
+bg{media/images/rock.png, -25.704685, 24.032774}
+bg{media/images/rock.png, -12.969168, 35.575893}
+spawn{player:0, 6.178776, 9.825207, 20.000000}
+spawn{imp:0, 13.441784, -129.492615, 20.000000}
+spawn{imp:1, -104.838722, -67.741928, 20.000000}
+load{null, 0.000000, 0.000000, 500.000000, 0.000000}
+box{56.285786, -51.902855, 10.558368}
+line{-158.387115, -111.014061, -24.174885, -193.044159}
+line{-24.174885, -193.044159, 95.421753, -173.823288}
+line{95.421753, -173.823288, 163.762726, -90.532768}
+line{163.762726, -90.532768, 200.068878, 1.300412}
+line{200.068878, 1.300412, 187.254959, 105.947464}
+line{187.254959, 105.947464, 121.049683, 161.474518}
+line{121.049683, 161.474518, 63.387016, 204.187561}
+line{63.387016, 204.187561, -24.174885, 214.865829}
+line{-24.174885, 214.865829, -98.922775, 199.916260}
+line{-98.922775, 199.916260, -154.449783, 131.575302}
+line{-154.449783, 131.575302, -192.891571, 56.827457}
+line{-192.891571, 56.827457, -204.384933, -26.400803}
+line{-204.384933, -26.400803, -153.844116, -116.124924}
+img{media/images/gran.png, 26.891893, -223.632980}
+img{media/images/gran.png, -133.804108, -206.668518}
+img{media/images/gran.png, 194.514359, -195.298157}
+img{media/images/gran.png, -52.790428, -189.613007}
+img{media/images/gran.png, 120.607178, -164.029724}
+img{media/images/gran.png, -241.822296, -155.501984}
+img{media/images/gran.png, -139.489273, -141.289062}
+img{media/images/gran.png, 252.787384, -87.279945}
+img{media/images/gran.png, 194.514359, -84.437355}
+img{media/images/gran.png, -207.711288, -58.854103}
+img{media/images/gran.png, 55.375462, -37.683655}
+img{media/images/gran.png, -277.354584, -21.900505}
+img{media/images/gran.png, 301.111267, 13.631790}
+img{media/images/gran.png, 225.623581, 28.496338}
+img{media/images/gran.png, -227.609375, 36.372467}
+img{media/images/gran.png, 221.184769, 77.322937}
+img{media/images/gran.png, -301.516541, 100.330635}
+img{media/images/gran.png, -233.050598, 124.669922}
+img{media/images/gran.png, 160.521439, 170.537354}
+img{media/images/gran.png, 268.531799, 182.374084}
+img{media/images/gran.png, 196.031662, 188.292480}
+img{media/images/gran.png, 96.898888, 211.965973}
+img{media/images/gran.png, -132.438202, 214.925171}
+img{media/images/gran.png, -213.396454, 216.876587}
+img{media/images/gran.png, 11.082413, 244.517059}
+img{media/images/gran.png, -45.142136, 271.149719}
+img{media/images/gran.png, 119.092781, 271.149719}
+img{media/images/gran.png, -167.948456, 306.659973}
