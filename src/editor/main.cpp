@@ -16,7 +16,7 @@ int main() {
 
 	sf::RenderWindow *window;
 	bool fullscreen = false;
-    
+	
 	window = new RenderWindow(sf::VideoMode(800, 620), WINDOW_TITLE, sf::Style::Resize | sf::Style::Close, settings);
 	//window = new RenderWindow(sf::VideoMode::getFullscreenModes()[0], WINDOW_TITLE, sf::Style::Fullscreen, settings);
 	window->setMouseCursorVisible(true);
@@ -25,7 +25,7 @@ int main() {
 	window->setFramerateLimit(FRAMERATE_LIMIT);
 
 	
-    Resources::setMainFont("media/fonts/pixlfont.ttf");
+	Resources::setMainFont("media/fonts/pixlfont.ttf");
 
 
 	Editor *editor = new Editor(window);

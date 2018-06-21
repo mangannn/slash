@@ -1,6 +1,10 @@
 art
 build
 
+media/maps/autosave.txt
+media/editor-settings.txt
+media/start-map.txt
+
 # Prerequisites
 *.d
 
